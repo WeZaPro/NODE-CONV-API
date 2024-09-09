@@ -24,7 +24,7 @@ module.exports = (app) => {
   // app.post("/lineUser", line.middleware(config), (req, res) => {
   app.post("/lineUser", async (req, res) => {
     console.log("req.body.events ", req.body.events[0]);
-    console.log("text===>  ", req.body.events[0].message.text);
+    //console.log("text===>  ", req.body.events[0].message.text);
 
     try {
       if (
