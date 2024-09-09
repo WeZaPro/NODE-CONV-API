@@ -220,10 +220,11 @@ exports.saveDataInfo = async (req, res) => {
 };
 
 exports.sendMessageFromWeb = async (req, res) => {
+  console.log("req.body -> ", req.body);
   const messagingApiUrl = "https://api.line.me/v2/bot/message/push";
-  const messagingAccessToken =
-    "tvb2bkJUvF5ZbSzAf9WDSmfwbwRDxI/2Nlw1TROa2XbaSAXdySiT1w4OvRQrTWPcZXSWvNn1cwlZtBkjly5fhhubxbIXzxZ5sAqnk0644k4l1ShKzP2MXJxZ50Wd1L0d1Yba6vX1JVDQYA/EBH2DbgdB04t89/1O/w1cDnyilFU="; // ใส่ Access Token ของคุณ
-
+  // const messagingAccessToken =
+  //   "tvb2bkJUvF5ZbSzAf9WDSmfwbwRDxI/2Nlw1TROa2XbaSAXdySiT1w4OvRQrTWPcZXSWvNn1cwlZtBkjly5fhhubxbIXzxZ5sAqnk0644k4l1ShKzP2MXJxZ50Wd1L0d1Yba6vX1JVDQYA/EBH2DbgdB04t89/1O/w1cDnyilFU="; // ใส่ Access Token ของคุณ
+  const messagingAccessToken = process.env.LINE_CHANNEL_ACCESS_TOKEN;
   const response = await fetch(messagingApiUrl, {
     method: "POST",
     headers: {
