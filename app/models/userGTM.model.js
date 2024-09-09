@@ -12,6 +12,26 @@ module.exports = (mongoose) => {
       gg_ketword: String,
 
       lineUid: String,
+      addFriend: {
+        type: String,
+        default: False,
+      },
+      eventA: {
+        type: String,
+        default: False,
+      },
+      eventB: {
+        type: String,
+        default: False,
+      },
+      eventC: {
+        type: String,
+        default: False,
+      },
+      eventD: {
+        type: String,
+        default: False,
+      },
     },
     { timestamps: true }
   );
