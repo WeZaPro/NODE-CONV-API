@@ -246,25 +246,46 @@ exports.saveDataInfo = async (req, res) => {
 
 exports.sendMessageFromWeb = async (req, res) => {
   console.log("req.body -> ", req.body);
-  const messagingApiUrl = "https://api.line.me/v2/bot/message/push";
-  // const messagingAccessToken =
-  //   "tvb2bkJUvF5ZbSzAf9WDSmfwbwRDxI/2Nlw1TROa2XbaSAXdySiT1w4OvRQrTWPcZXSWvNn1cwlZtBkjly5fhhubxbIXzxZ5sAqnk0644k4l1ShKzP2MXJxZ50Wd1L0d1Yba6vX1JVDQYA/EBH2DbgdB04t89/1O/w1cDnyilFU="; // ใส่ Access Token ของคุณ
-  const messagingAccessToken = process.env.LINE_CHANNEL_ACCESS_TOKEN;
-  const response = await fetch(messagingApiUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${messagingAccessToken}`,
-    },
-    body: JSON.stringify(req.body),
-  });
 
-  if (response.ok) {
-    res.status(200).json({ message: "Message sent successfully" });
-  } else {
-    res.status(response.status).json({ message: "Failed to send message" });
+  // ตรวจสอบว่ามี 'to' และ 'messages' หรือไม่
+  if (!req.body.to || !req.body.messages) {
+    return res
+      .status(400)
+      .json({ message: "'to' and 'messages' fields are required" });
+  }
+
+  const messagingApiUrl = "https://api.line.me/v2/bot/message/push";
+  const messagingAccessToken = process.env.LINE_CHANNEL_ACCESS_TOKEN;
+  // const messagingAccessToken =
+  //   "tvb2bkJUvF5ZbSzAf9WDSmfwbwRDxI/2Nlw1TROa2XbaSAXdySiT1w4OvRQrTWPcZXSWvNn1cwlZtBkjly5fhhubxbIXzxZ5sAqnk0644k4l1ShKzP2MXJxZ50Wd1L0d1Yba6vX1JVDQYA/EBH2DbgdB04t89/1O/w1cDnyilFU=";
+
+  try {
+    const response = await fetch(messagingApiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${messagingAccessToken}`,
+      },
+      body: JSON.stringify(req.body),
+    });
+
+    const responseData = await response.json();
+    console.log("response data: ", responseData);
+
+    if (response.ok) {
+      res.status(200).json({ message: "Message sent successfully" });
+    } else {
+      console.log("Failed response data: ", responseData);
+      res
+        .status(response.status)
+        .json({ message: "Failed to send message", details: responseData });
+    }
+  } catch (error) {
+    console.error("Error sending message:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
+
 // function samplePayload() {
 //   console.log("test send payLoad-->");
 //   return [
