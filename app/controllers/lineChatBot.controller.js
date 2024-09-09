@@ -1,8 +1,10 @@
 const db = require("../models");
 const https = require("https");
 const LineBot = db.getMessage;
+const DataGTM = db.userGtms;
 require("dotenv").config();
 const liff = require("@line/liff");
+
 // let channelAccessToken = process.env.LINE_CHANNEL_ACCESS_TOKEN;
 let channelAccessToken = process.env.LINE_CHANNEL_ACCESS_TOKEN;
 
@@ -215,8 +217,30 @@ function responseMessage(inputMsg) {
 }
 exports.saveDataInfo = async (req, res) => {
   // get data from website ผ่าน gtm แล้ว save to mongo
-  console.log("req.body ", req.body);
-  return "test1234";
+  const gtmData = new DataGTM({
+    convUserId: req.body.convUserId,
+    userAgent: req.body.userAgent,
+    ipAddess: req.body.ipAddess,
+    clientID: req.body.clientID,
+    utm_source: req.body.utm_source,
+    utm_medium: req.body.utm_medium,
+    utm_term: req.body.utm_term,
+    gg_ketword: req.body.gg_ketword,
+  });
+
+  DataGTM.findOne(
+    { convUserId: req.body.convUserId },
+    function (err, _dataGTM) {
+      // console.log("_dataGTM ", _dataGTM);
+      if (!_dataGTM) {
+        gtmData.save().then((dataSave) => {
+          // console.log("dataSave ", dataSave);
+          // res.send({ message: "save data ok", sendData: dataSave });
+          res.status(200).send({ message: "save data ok", sendData: dataSave });
+        });
+      }
+    }
+  );
 };
 //
 

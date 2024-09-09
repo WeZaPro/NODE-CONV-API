@@ -1,20 +1,17 @@
 module.exports = (mongoose) => {
   var schema = mongoose.Schema(
     {
-      botUserId: String,
-      userId: String,
-      lineUid: String,
-      lineDisplayName: String,
-      client_id: String,
+      convUserId: String,
       userAgent: String,
-      ipAddressWebStart: String,
-      ipAddressChatLine: String,
-      uniqueEventId: String,
-      sessionId: String,
-      timeStamp: String,
+      ipAddess: String,
+      clientID: String,
       utm_source: String,
       utm_medium: String,
+      utm_campaign: String,
       utm_term: String,
+      gg_ketword: String,
+
+      lineUid: String,
     },
     { timestamps: true }
   );
