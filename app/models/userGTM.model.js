@@ -14,23 +14,23 @@ module.exports = (mongoose) => {
       lineUid: String,
       addFriend: {
         type: String,
-        default: False,
+        default: "",
       },
       eventA: {
         type: String,
-        default: False,
+        default: "",
       },
       eventB: {
         type: String,
-        default: False,
+        default: "",
       },
       eventC: {
         type: String,
-        default: False,
+        default: "",
       },
       eventD: {
         type: String,
-        default: False,
+        default: "",
       },
     },
     { timestamps: true }
