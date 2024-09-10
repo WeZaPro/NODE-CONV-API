@@ -12,7 +12,10 @@ module.exports = (mongoose) => {
       utm_term: String,
       gg_ketword: String,
 
-      lineUid: String,
+      lineUid: {
+        type: String,
+        default: "",
+      },
       addFriend: {
         type: String,
         default: "",

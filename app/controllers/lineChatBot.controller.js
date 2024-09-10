@@ -287,20 +287,4 @@ exports.sendMessageFromWeb = async (req, res) => {
   }
 };
 
-function fingTokenFormDestination(destination) {
-  Customer.findOne({ linebot_destination: destination })
-    .then((data) => {
-      if (!data) {
-        const notFound = "Not found fingTokenFormDestination with id ";
-        return notFound;
-      } else {
-        return data;
-      }
-    })
-    .catch((err) => {
-      console.log("err ", err);
-      // res
-      //   .status(500)
-      //   .send({ message: "Error retrieving fingTokenFormDestination with id=" + destination });
-    });
-}
+
