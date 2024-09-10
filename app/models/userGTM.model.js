@@ -6,11 +6,27 @@ module.exports = (mongoose) => {
       userAgent: String,
       ipAddess: String,
       clientID: String,
-      utm_source: String,
-      utm_medium: String,
-      utm_campaign: String,
-      utm_term: String,
-      gg_ketword: String,
+
+      utm_source: {
+        type: String,
+        default: "",
+      },
+      utm_medium: {
+        type: String,
+        default: "",
+      },
+      utm_campaign: {
+        type: String,
+        default: "",
+      },
+      utm_term: {
+        type: String,
+        default: "",
+      },
+      gg_ketword: {
+        type: String,
+        default: "",
+      },
 
       lineUid: {
         type: String,
