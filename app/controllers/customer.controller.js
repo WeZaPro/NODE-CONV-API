@@ -13,6 +13,9 @@ exports.create = (req, res) => {
     linebot_destination: req.body.linebot_destination,
     linebot_token: req.body.linebot_token,
     channel_secret: req.body.channel_secret,
+    Measurement_id: req.body.Measurement_id,
+    addFriend_name: req.body.addFriend_name,
+    addFriend_secret: req.body.addFriend_secret,
   });
 
   // Save Tutorial in the database
