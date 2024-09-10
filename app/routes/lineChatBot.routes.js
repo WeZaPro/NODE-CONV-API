@@ -53,6 +53,42 @@ module.exports = (app) => {
     }
   });
 
+  app.post("/findConvUidToUpdateLineUid", async (req, res) => {
+    const db = require("../models");
+    const DataGTM = db.userGtms;
+
+    const convUid = req.body.convUserId;
+    const lineUid = req.body.lineUid;
+
+    console.log();
+
+    const filter = { convUserId: convUid };
+    const update = { lineUid: lineUid };
+
+    DataGTM.findOneAndUpdate(filter, update, {
+      new: true,
+    })
+      .then((data) => {
+        if (!data) {
+          const notFound = "Not found findconvUserIdAndUpdateLineUid with id ";
+          // return notFound;
+          res.send({ message: notFound });
+        } else {
+          // return data;
+          res.send({ message: data });
+          // res
+          //   .status(500)
+          //   .send({ message: "Error retrieving fingToken
+        }
+      })
+      .catch((err) => {
+        console.log("err ", err);
+        // res
+        //   .status(500)
+        //   .send({ message: "Error retrieving fingTokenFormDestination with id=" + destination });
+      });
+  });
+
   app.use("/api/", router);
 };
 
