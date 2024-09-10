@@ -24,8 +24,11 @@ module.exports = (app) => {
   // app.post("/lineUser", line.middleware(config), (req, res) => {
   app.post("/lineUser", async (req, res) => {
     console.log("req.body.events ", req.body.events[0]);
-    //console.log("text===>  ", req.body.events[0].message.text);
 
+    //console.log("text===>  ", req.body.events[0].message.text);
+    // รับ request จาก bot ให้เช็ค linebot destination = req.body.destination
+    console.log("req.body.destination ", req.body.destination);
+    // find destination from mongodb => get data
     try {
       if (
         req.body.events[0].type == "message" ||
@@ -37,10 +40,10 @@ module.exports = (app) => {
         console.log("User Profile:", profile);
 
         // ส่งข้อความตอบกลับผู้ใช้
-        // return client.replyMessage(req.body.events[0].replyToken, {
-        //   type: "text",
-        //   text: `Hello ${profile.displayName}! Your user ID is ${profile.userId}.`,
-        // });
+        return client.replyMessage(req.body.events[0].replyToken, {
+          type: "text",
+          text: `Hello ${profile.displayName}! Your user ID is ${profile.userId}.`,
+        });
       }
     } catch (err) {
       console.error("Error getting profile:", err);

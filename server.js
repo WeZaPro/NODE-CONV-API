@@ -66,6 +66,7 @@ require("./app/routes/userGtm.routes")(app);
 require("./app/routes/userAudience.routes ")(app);
 //chatbot
 require("./app/routes/lineChatBot.routes")(app);
+require("./app/routes/customer.routes")(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;

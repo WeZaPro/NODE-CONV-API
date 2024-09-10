@@ -218,6 +218,7 @@ function responseMessage(inputMsg) {
 exports.saveDataInfo = async (req, res) => {
   // get data from website ผ่าน gtm แล้ว save to mongo
   const gtmData = new DataGTM({
+    customerID: req.body.customerID,
     convUserId: req.body.convUserId,
     userAgent: req.body.userAgent,
     ipAddess: req.body.ipAddess,
