@@ -287,20 +287,71 @@ exports.sendMessageFromWeb = async (req, res) => {
   }
 };
 
-function fingTokenFormDestination(destination) {
-  Customer.findOne({ linebot_destination: destination })
-    .then((data) => {
-      if (!data) {
-        const notFound = "Not found fingTokenFormDestination with id ";
-        return notFound;
-      } else {
-        return data;
-      }
-    })
-    .catch((err) => {
-      console.log("err ", err);
-      // res
-      //   .status(500)
-      //   .send({ message: "Error retrieving fingTokenFormDestination with id=" + destination });
-    });
-}
+// function samplePayload() {
+//   console.log("test send payLoad-->");
+//   return [
+//     {
+//       type: "template",
+//       altText: "this is a confirm template",
+//       template: {
+//         columns: [
+//           {
+//             title: "เบียร์สด หรือ นามะบีรุ",
+//             actions: [
+//               {
+//                 type: "uri",
+//                 uri: "https://liff.line.me/2001254953-w391eWy1",
+//                 label: "รายละเอียด",
+//               },
+//             ],
+//             text: "เป็นเครื่องดื่มที่ทางร้านนาเอบะขาดไม่ได้เลย ลูกค้ามักจะถามถึงเป็นอันดับแรก",
+//             thumbnailImageUrl:
+//               "https://naebaizakaya.com/wp-content/uploads/2023/11/1-1.jpg",
+//           },
+//           {
+//             actions: [
+//               {
+//                 type: "uri",
+//                 uri: "https://liff.line.me/2001254953-w391eWy1",
+//                 label: "รายละเอียด",
+//               },
+//             ],
+//             title: "เมนูเสียบไม้ หรือ ยากิโทริ",
+//             text: "ยากิโทริคือไก่ย่างเสียบไม้โดยจะมีไก่หลายส่วนให้เลือก",
+//             thumbnailImageUrl:
+//               "https://naebaizakaya.com/wp-content/uploads/2023/11/2-2.jpg",
+//           },
+//           {
+//             text: "เป็นเครื่องดื่มอีกชนิดที่ลูกค้าที่ร้านนาเอบะชอบสั่งมาดื่มกัน มีรสชาติหวานอมเปรี้ยว",
+//             thumbnailImageUrl:
+//               "https://naebaizakaya.com/wp-content/uploads/2023/11/3-1.jpg",
+//             actions: [
+//               {
+//                 label: "รายละเอียด",
+//                 uri: "https://liff.line.me/2001254953-w391eWy1",
+//                 type: "uri",
+//               },
+//             ],
+//             title: "เหล้าบ๊วย หรือ อุเมะชุ",
+//           },
+//           {
+//             title: "หม้อไฟ หรือ นาเบะ",
+//             actions: [
+//               {
+//                 type: "uri",
+//                 label: "รายละเอียด",
+//                 uri: "https://liff.line.me/2001254953-w391eWy1",
+//               },
+//             ],
+//             text: "คืออาหารที่ใส่ผัก,เห็ด,เนื้อสัตว์,เต้าหู้ และเส้น ลงในหม้อแล้วพร้อมเสริฟ",
+//             thumbnailImageUrl:
+//               "https://naebaizakaya.com/wp-content/uploads/2023/11/4-1.jpg",
+//           },
+//         ],
+//         type: "carousel",
+//         imageSize: "cover",
+//         imageAspectRatio: "square",
+//       },
+//     },
+//   ];
+// }

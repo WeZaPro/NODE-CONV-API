@@ -29,6 +29,9 @@ module.exports = (app) => {
     // รับ request จาก bot ให้เช็ค linebot destination = req.body.destination
     console.log("req.body.destination ", req.body.destination);
     // find destination from mongodb => get data
+    const cusData = findTokenFormDestination(req.body.destination);
+    console.log("cusData ", cusData);
+
     try {
       if (
         req.body.events[0].type == "message" ||
@@ -52,3 +55,23 @@ module.exports = (app) => {
 
   app.use("/api/", router);
 };
+
+function findTokenFormDestination(destination) {
+  const db = require("../models");
+  const Customer = db.customer;
+  Customer.findOne({ linebot_destination: destination })
+    .then((data) => {
+      if (!data) {
+        const notFound = "Not found fingTokenFormDestination with id ";
+        return notFound;
+      } else {
+        return data;
+      }
+    })
+    .catch((err) => {
+      console.log("err ", err);
+      // res
+      //   .status(500)
+      //   .send({ message: "Error retrieving fingTokenFormDestination with id=" + destination });
+    });
+}
