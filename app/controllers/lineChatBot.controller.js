@@ -226,7 +226,7 @@ exports.saveDataInfo = async (req, res) => {
     utm_source: req.body.utm_source,
     utm_medium: req.body.utm_medium,
     utm_term: req.body.utm_term,
-    gg_ketword: req.body.gg_ketword,
+    gg_keyword: req.body.gg_keyword,
   });
 
   DataGTM.findOne(
@@ -286,5 +286,3 @@ exports.sendMessageFromWeb = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
-

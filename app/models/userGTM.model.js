@@ -6,7 +6,6 @@ module.exports = (mongoose) => {
       userAgent: String,
       ipAddess: String,
       clientID: String,
-
       utm_source: {
         type: String,
         default: "",
@@ -23,7 +22,7 @@ module.exports = (mongoose) => {
         type: String,
         default: "",
       },
-      gg_ketword: {
+      gg_keyword: {
         type: String,
         default: "",
       },
