@@ -360,21 +360,29 @@ exports.lineUser = async (req, res) => {
         // console.log("interest case");
         messageBack = `${checkTextA} = interest case`;
         await fnAddConv(userId, interest);
+        // ส่งข้อความตอบกลับผู้ใช้
+        return client.replyMessage(req.body.events[0].replyToken, {
+          type: "text",
+          text: `SEND CASE ${messageBack}! `,
+        });
       } else if (isPurchase) {
         // console.log("purchase case");
         messageBack = `${checkTextB} = purchase case`;
         await fnAddConv(userId, purchase);
+        // ส่งข้อความตอบกลับผู้ใช้
+        return client.replyMessage(req.body.events[0].replyToken, {
+          type: "text",
+          text: `SEND CASE ${messageBack}! `,
+        });
       } else {
         // console.log("default case");
         messageBack = "default case";
+        // ส่งข้อความตอบกลับผู้ใช้
+        // return client.replyMessage(req.body.events[0].replyToken, {
+        //   type: "text",
+        //   text: `SEND CASE ${messageBack}! `,
+        // });
       }
-
-      // ส่งข้อความตอบกลับผู้ใช้
-      return client.replyMessage(req.body.events[0].replyToken, {
-        type: "text",
-        // text: `Hello ${profile.displayName}! Your user ID is ${profile.userId}.`,
-        text: `SEND CASE ${messageBack}! `,
-      });
     } else if (req.body.events[0].type == "follow") {
       console.log("TYPE FOLLOW============> ");
       // const userId = req.body.events[0].source.userId;
@@ -409,7 +417,7 @@ const fnAddConv = async function (userId, getEnv) {
     } else if (getEnv.event == "purchase") {
       update = { eventB: true };
     } else {
-      update = { eventC: true };
+      update = { eventC: "na" };
     }
 
     const filter = { lineUid: userId };
