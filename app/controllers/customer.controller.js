@@ -50,3 +50,22 @@ exports.findCusId = (req, res) => {
     });
   // res.send("search data");
 };
+
+exports.lineAddFriend = (req, res) => {
+  const cusId = req.body.customerID;
+
+  Customer.findOne({ customerID: cusId })
+    .then((data) => {
+      if (!data)
+        res
+          .status(404)
+          .send({ message: "Not found findCusId with id " + cusId });
+      else res.send(data);
+    })
+    .catch((err) => {
+      res
+        .status(500)
+        .send({ message: "Error retrieving findCusId with id=" + cusId });
+    });
+  // res.send("search data");
+};

@@ -26,6 +26,10 @@ module.exports = (mongoose) => {
         type: String,
         default: "",
       },
+      session_id: {
+        type: String,
+        default: "",
+      },
 
       lineUid: {
         type: String,

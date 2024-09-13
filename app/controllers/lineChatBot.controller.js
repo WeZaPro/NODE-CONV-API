@@ -5,6 +5,14 @@ const DataGTM = db.userGtms;
 require("dotenv").config();
 const liff = require("@line/liff");
 
+// API CHAT BOT
+const line = require("@line/bot-sdk");
+const config = {
+  channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN,
+  channelSecret: process.env.channelSecret,
+};
+const client = new line.Client(config);
+
 // let channelAccessToken = process.env.LINE_CHANNEL_ACCESS_TOKEN;
 let channelAccessToken = process.env.LINE_CHANNEL_ACCESS_TOKEN;
 
@@ -228,6 +236,7 @@ exports.saveDataInfo = async (req, res) => {
     utm_medium: req.body.utm_medium,
     utm_term: req.body.utm_term,
     gg_keyword: req.body.gg_keyword,
+    session_id: req.body.session_id,
   });
 
   DataGTM.findOne(
@@ -286,4 +295,226 @@ exports.sendMessageFromWeb = async (req, res) => {
     console.error("Error sending message:", error);
     res.status(500).json({ message: "Internal server error" });
   }
+};
+
+exports.lineUser = async (req, res) => {
+  // console.log("req.body.events ", req.body.events[0]);
+  // console.log("req.body.destination ", req.body.destination);
+  // console.log("userId ", req.body.events[0].source.userId);
+  const lineUid = req.body.events[0].source.userId;
+  // get data from website ผ่าน gtm แล้ว save to mongo
+  // const gtmData = new DataGTM({
+  //   customerID: req.body.customerID,
+  //   convUserId: req.body.convUserId,
+  //   userAgent: req.body.userAgent,
+  //   ipAddess: req.body.ipAddess,
+  //   clientID: req.body.clientID,
+  //   utm_campaign: req.body.utm_campaign,
+  //   utm_source: req.body.utm_source,
+  //   utm_medium: req.body.utm_medium,
+  //   utm_term: req.body.utm_term,
+  //   gg_keyword: req.body.gg_keyword,
+  // });
+  const filter = { lineUid: lineUid };
+
+  try {
+    if (
+      req.body.events[0].type == "message" ||
+      req.body.events[0].type == "text"
+    ) {
+      console.log("TYPE MESSAGE============> ");
+      const userId = req.body.events[0].source.userId;
+      const profile = await client.getProfile(userId);
+      // console.log("User Profile:", profile);
+      // console.log("User ID:", profile.userId);
+
+      // ใช้  profile.userId find mongoDB แล้ว Update Follow status + Send Date Event+Secret to GA4
+
+      await fnAddFriend(userId);
+
+      // ส่งข้อความตอบกลับผู้ใช้
+      return client.replyMessage(req.body.events[0].replyToken, {
+        type: "text",
+        text: `Hello ${profile.displayName}! Your user ID is ${profile.userId}.`,
+      });
+    } else if (req.body.events[0].type == "follow") {
+      console.log("TYPE FOLLOW============> ");
+      const userId = req.body.events[0].source.userId;
+      const profile = await client.getProfile(userId);
+      console.log("User Profile:", profile);
+    }
+  } catch (err) {
+    console.error("Error getting profile:", err);
+  }
+
+  // res.send("test");
+};
+
+// const fnAddFriend = async function (lineUid) {
+//   try {
+//     const filter = { lineUid: lineUid };
+//     const update = { addFriend: true };
+
+//     // Use the options to return the updated document
+//     const addFriend = await DataGTM.findOneAndUpdate(filter, update, {
+//       new: true,
+//     });
+
+//     console.log("addFriend ", addFriend);
+//   } catch (error) {
+//     console.error("Error updating addFriend: ", error);
+//   }
+// };
+
+const fnAddFriend = async function (userId) {
+  try {
+    const filter = { lineUid: userId };
+    const update = { addFriend: true };
+
+    // Use the options to return the updated document
+    const addFriend = await DataGTM.findOneAndUpdate(filter, update, {
+      new: true,
+    });
+    await sendToGa4(userId);
+    // console.log("addFriend ", addFriend);
+    // goto GA4 API Conversion
+  } catch (error) {
+    console.error("Error updating addFriend: ", error);
+  }
+};
+
+// const sendToGa4 = async function (userId) {
+//   console.log("sendToGa4 ", userId);
+//   // find DB
+//   DataGTM.findOne({ lineUid: userId }, function (err, _dataGTM) {
+//     // console.log("_dataGTM ", _dataGTM);
+
+//     const myHeaders = new Headers();
+//     myHeaders.append("Content-Type", "application/json");
+
+//     const raw = JSON.stringify({
+//       client_id: _dataGTM.clientID,
+//       user_properties: {
+//         ipAddress: {
+//           value: _dataGTM.ipAddess,
+//         },
+//       },
+//       events: [
+//         {
+//           name: "addFriend",
+//           params: {
+//             convUserId: _dataGTM.convUserId,
+//             campaign: _dataGTM.utm_campaign,
+//             source: _dataGTM.utm_source,
+//             medium: _dataGTM.utm_medium,
+//             term: _dataGTM.utm_term,
+//             content: _dataGTM.gg_keyword,
+//             updatedAt: _dataGTM.updatedAt,
+//             engagement_time_msec: "100",
+//           },
+//         },
+//       ],
+//     });
+
+//     const requestOptions = {
+//       method: "POST",
+//       headers: myHeaders,
+//       body: raw,
+//       redirect: "follow",
+//     };
+
+//     const api_secre = "C2sGHFZaRF6MA0KQ_igkiA";
+//     const measurement_id = "G-BF1T8ZNXZQ";
+
+//     fetch(
+//       `https://www.google-analytics.com/mp/collect?measurement_id=${measurement_id}api_secret=${api_secre}`,
+//       requestOptions
+//     )
+//       .then((response) => {
+//         console.log("response ", response);
+//         // response.text();
+//         response;
+//       })
+//       .then((result) => {
+//         console.log("result", result);
+//       })
+//       .catch((error) => console.error(error));
+//   });
+// };
+
+const sendToGa4 = async function (userId) {
+  console.log("sendToGa4 ", userId);
+
+  // Find the document in the database
+  DataGTM.findOne({ lineUid: userId }, function (err, _dataGTM) {
+    if (err) {
+      console.error("Error finding data: ", err);
+      return;
+    }
+
+    if (!_dataGTM) {
+      console.log("No data found for user: ", userId);
+      return;
+    }
+
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const raw = JSON.stringify({
+      client_id: _dataGTM.clientID,
+      user_properties: { ipAddress: { value: _dataGTM.ipAddess } },
+      events: [
+        {
+          name: "addFriend",
+          params: {
+            convUserId: _dataGTM.convUserId,
+            campaign: _dataGTM.utm_campaign,
+            source: _dataGTM.utm_source,
+            medium: _dataGTM.utm_medium,
+            term: _dataGTM.utm_term,
+            content: _dataGTM.gg_keyword,
+            session_id: _dataGTM.session_id,
+            engagement_time_msec: "100",
+          },
+        },
+      ],
+    });
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    const api_secret = "C2sGHFZaRF6MA0KQ_igkiA"; // Corrected 'api_secre' to 'api_secret'
+    const measurement_id = "G-BF1T8ZNXZQ";
+
+    // Added '&' between the query parameters in the URL
+    fetch(
+      `https://www.google-analytics.com/mp/collect?measurement_id=${measurement_id}&api_secret=${api_secret}`,
+      // "https://www.google-analytics.com/mp/collect?measurement_id=G-BF1T8ZNXZQ&api_secret=Dpl6kV_3TC-FtqFKFQ9Plw",
+      requestOptions
+    )
+      .then((response) => {
+        if (!response.ok) {
+          // Handle error response
+          throw new Error(
+            `Network response was not ok: ${response.statusText}`
+          );
+        }
+
+        // Check if there's any content to parse
+        const contentType = response.headers.get("Content-Type");
+        if (contentType && contentType.includes("application/json")) {
+          return response.json(); // Parse response as JSON
+        } else {
+          return response.text(); // Handle non-JSON response (if any)
+        }
+      })
+      .then((result) => {
+        console.log("result", result);
+      })
+      .catch((error) => console.error("Error with fetch: ", error));
+  });
 };
