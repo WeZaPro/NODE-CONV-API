@@ -315,33 +315,79 @@ exports.lineUser = async (req, res) => {
   //   utm_term: req.body.utm_term,
   //   gg_keyword: req.body.gg_keyword,
   // });
-  const filter = { lineUid: lineUid };
+  // const filter = { lineUid: lineUid };
+  const userId = req.body.events[0].source.userId;
+  const profile = await client.getProfile(userId);
+
+  //ADD FRIEND
+  const addNewFriend = {
+    measurement_id: "G-BF1T8ZNXZQ",
+    secret_value: "C2sGHFZaRF6MA0KQ_igkiA",
+    event: "addFriend",
+  };
+
+  const purchase = {
+    measurement_id: "G-BF1T8ZNXZQ",
+    secret_value: "NMsz4YtcS0SlSoFV-jK-uQ",
+    event: "PurchaseA",
+  };
+
+  const interest = {
+    measurement_id: "G-BF1T8ZNXZQ",
+    secret_value: "_UBms8ItRX2nl49klAVNVw",
+    event: "interest",
+  };
 
   try {
     if (
       req.body.events[0].type == "message" ||
       req.body.events[0].type == "text"
     ) {
-      console.log("TYPE MESSAGE============> ");
-      const userId = req.body.events[0].source.userId;
-      const profile = await client.getProfile(userId);
+      console.log(
+        "TYPE Message============> ",
+        req.body.events[0].message.text
+      );
+      const getText = req.body.events[0].message.text;
+      let messageBack = ""; // Use let instead of const to allow reassignment
+
+      const checkTextA = "สนใจ";
+      const checkTextB = "สั่งซื้อ";
+      const isInterest = getText.includes(checkTextA);
+      const isPurchase = getText.includes(checkTextB);
+      // console.log("isInterest ", isInterest);
+
+      if (isInterest) {
+        // console.log("interest case");
+        messageBack = `${checkTextA} = interest case`;
+        await fnAddConv(userId, interest);
+      } else if (isPurchase) {
+        // console.log("purchase case");
+        messageBack = `${checkTextB} = purchase case`;
+        await fnAddConv(userId, purchase);
+      } else {
+        // console.log("default case");
+        messageBack = "default case";
+      }
+
+      // ส่งข้อความตอบกลับผู้ใช้
+      return client.replyMessage(req.body.events[0].replyToken, {
+        type: "text",
+        // text: `Hello ${profile.displayName}! Your user ID is ${profile.userId}.`,
+        text: `SEND CASE ${messageBack}! `,
+      });
+    } else if (req.body.events[0].type == "follow") {
+      console.log("TYPE FOLLOW============> ");
+      // const userId = req.body.events[0].source.userId;
+      // const profile = await client.getProfile(userId);
       // console.log("User Profile:", profile);
-      // console.log("User ID:", profile.userId);
 
-      // ใช้  profile.userId find mongoDB แล้ว Update Follow status + Send Date Event+Secret to GA4
-
-      await fnAddFriend(userId);
+      await fnAddConv(userId, addNewFriend);
 
       // ส่งข้อความตอบกลับผู้ใช้
       return client.replyMessage(req.body.events[0].replyToken, {
         type: "text",
         text: `Hello ${profile.displayName}! Your user ID is ${profile.userId}.`,
       });
-    } else if (req.body.events[0].type == "follow") {
-      console.log("TYPE FOLLOW============> ");
-      const userId = req.body.events[0].source.userId;
-      const profile = await client.getProfile(userId);
-      console.log("User Profile:", profile);
     }
   } catch (err) {
     console.error("Error getting profile:", err);
@@ -350,99 +396,37 @@ exports.lineUser = async (req, res) => {
   // res.send("test");
 };
 
-// const fnAddFriend = async function (lineUid) {
-//   try {
-//     const filter = { lineUid: lineUid };
-//     const update = { addFriend: true };
-
-//     // Use the options to return the updated document
-//     const addFriend = await DataGTM.findOneAndUpdate(filter, update, {
-//       new: true,
-//     });
-
-//     console.log("addFriend ", addFriend);
-//   } catch (error) {
-//     console.error("Error updating addFriend: ", error);
-//   }
 // };
 
-const fnAddFriend = async function (userId) {
+const fnAddConv = async function (userId, getEnv) {
+  console.log("getEnv ", getEnv);
   try {
+    let update = "";
+    if (getEnv.event == "addFriend") {
+      update = { addFriend: true };
+    } else if (getEnv.event == "interest") {
+      update = { eventA: true };
+    } else if (getEnv.event == "purchase") {
+      update = { eventB: true };
+    } else {
+      update = { eventC: true };
+    }
+
     const filter = { lineUid: userId };
-    const update = { addFriend: true };
 
     // Use the options to return the updated document
-    const addFriend = await DataGTM.findOneAndUpdate(filter, update, {
+    const addConv = await DataGTM.findOneAndUpdate(filter, update, {
       new: true,
     });
-    await sendToGa4(userId);
-    // console.log("addFriend ", addFriend);
+    await sendToGa4(userId, getEnv);
+    console.log("addConv ", addConv);
     // goto GA4 API Conversion
   } catch (error) {
     console.error("Error updating addFriend: ", error);
   }
 };
 
-// const sendToGa4 = async function (userId) {
-//   console.log("sendToGa4 ", userId);
-//   // find DB
-//   DataGTM.findOne({ lineUid: userId }, function (err, _dataGTM) {
-//     // console.log("_dataGTM ", _dataGTM);
-
-//     const myHeaders = new Headers();
-//     myHeaders.append("Content-Type", "application/json");
-
-//     const raw = JSON.stringify({
-//       client_id: _dataGTM.clientID,
-//       user_properties: {
-//         ipAddress: {
-//           value: _dataGTM.ipAddess,
-//         },
-//       },
-//       events: [
-//         {
-//           name: "addFriend",
-//           params: {
-//             convUserId: _dataGTM.convUserId,
-//             campaign: _dataGTM.utm_campaign,
-//             source: _dataGTM.utm_source,
-//             medium: _dataGTM.utm_medium,
-//             term: _dataGTM.utm_term,
-//             content: _dataGTM.gg_keyword,
-//             updatedAt: _dataGTM.updatedAt,
-//             engagement_time_msec: "100",
-//           },
-//         },
-//       ],
-//     });
-
-//     const requestOptions = {
-//       method: "POST",
-//       headers: myHeaders,
-//       body: raw,
-//       redirect: "follow",
-//     };
-
-//     const api_secre = "C2sGHFZaRF6MA0KQ_igkiA";
-//     const measurement_id = "G-BF1T8ZNXZQ";
-
-//     fetch(
-//       `https://www.google-analytics.com/mp/collect?measurement_id=${measurement_id}api_secret=${api_secre}`,
-//       requestOptions
-//     )
-//       .then((response) => {
-//         console.log("response ", response);
-//         // response.text();
-//         response;
-//       })
-//       .then((result) => {
-//         console.log("result", result);
-//       })
-//       .catch((error) => console.error(error));
-//   });
-// };
-
-const sendToGa4 = async function (userId) {
+const sendToGa4 = async function (userId, getEnv) {
   console.log("sendToGa4 ", userId);
 
   // Find the document in the database
@@ -465,7 +449,7 @@ const sendToGa4 = async function (userId) {
       user_properties: { ipAddress: { value: _dataGTM.ipAddess } },
       events: [
         {
-          name: "addFriend",
+          name: getEnv.event,
           params: {
             convUserId: _dataGTM.convUserId,
             campaign: _dataGTM.utm_campaign,
@@ -487,8 +471,8 @@ const sendToGa4 = async function (userId) {
       redirect: "follow",
     };
 
-    const api_secret = "C2sGHFZaRF6MA0KQ_igkiA"; // Corrected 'api_secre' to 'api_secret'
-    const measurement_id = "G-BF1T8ZNXZQ";
+    const api_secret = getEnv.secret_value; // Corrected 'api_secre' to 'api_secret'
+    const measurement_id = getEnv.measurement_id;
 
     // Added '&' between the query parameters in the URL
     fetch(
