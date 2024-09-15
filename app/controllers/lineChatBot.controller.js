@@ -414,7 +414,7 @@ const fnAddConv = async function (userId, getEnv) {
       update = { addFriend: true };
     } else if (getEnv.event == "interest") {
       update = { eventA: true };
-    } else if (getEnv.event == "purchase") {
+    } else if (getEnv.event == "PurchaseA") {
       update = { eventB: true };
     } else {
       update = { eventC: "na" };
