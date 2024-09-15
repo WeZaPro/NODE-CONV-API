@@ -466,7 +466,7 @@ const sendToGa4 = async function (userId, getEnv) {
             term: _dataGTM.utm_term,
             content: _dataGTM.gg_keyword,
             session_id: _dataGTM.session_id,
-            engagement_time_msec: "100",
+            // engagement_time_msec: "100",
           },
         },
       ],
