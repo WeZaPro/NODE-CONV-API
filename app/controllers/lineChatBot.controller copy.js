@@ -229,19 +229,23 @@ exports.saveDataInfo = async (req, res) => {
     gg_ketword: req.body.gg_ketword,
   });
 
-  DataGTM.findOne(
-    { convUserId: req.body.convUserId },
-    function (err, _dataGTM) {
-      // console.log("_dataGTM ", _dataGTM);
-      if (!_dataGTM) {
-        gtmData.save().then((dataSave) => {
-          // console.log("dataSave ", dataSave);
-          // res.send({ message: "save data ok", sendData: dataSave });
-          res.status(200).send({ message: "save data ok", sendData: dataSave });
-        });
+  if (gtmData.utm_source && gtmData.utm_medium) {
+    DataGTM.findOne(
+      { convUserId: req.body.convUserId },
+      function (err, _dataGTM) {
+        // console.log("_dataGTM ", _dataGTM);
+        if (!_dataGTM) {
+          gtmData.save().then((dataSave) => {
+            // console.log("dataSave ", dataSave);
+            // res.send({ message: "save data ok", sendData: dataSave });
+            res
+              .status(200)
+              .send({ message: "save data ok", sendData: dataSave });
+          });
+        }
       }
-    }
-  );
+    );
+  }
 };
 //
 
