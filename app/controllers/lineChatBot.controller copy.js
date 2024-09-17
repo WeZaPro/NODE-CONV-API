@@ -228,8 +228,11 @@ exports.saveDataInfo = async (req, res) => {
     utm_term: req.body.utm_term,
     gg_ketword: req.body.gg_ketword,
   });
-
+  console.log("gtmData --------", gtmData);
   if (gtmData.utm_source && gtmData.utm_medium) {
+    console.log("Save db --------");
+    console.log("utm_source ", gtmData.utm_source);
+    console.log("utm_medium ", gtmData.utm_medium);
     DataGTM.findOne(
       { convUserId: req.body.convUserId },
       function (err, _dataGTM) {
@@ -245,6 +248,10 @@ exports.saveDataInfo = async (req, res) => {
         }
       }
     );
+  } else {
+    console.log("Don't Save db --------");
+    console.log("utm_source ", gtmData.utm_source);
+    console.log("utm_medium ", gtmData.utm_medium);
   }
 };
 //
