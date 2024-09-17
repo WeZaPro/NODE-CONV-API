@@ -239,19 +239,45 @@ exports.saveDataInfo = async (req, res) => {
     session_id: req.body.session_id,
   });
 
-  DataGTM.findOne(
-    { convUserId: req.body.convUserId },
-    function (err, _dataGTM) {
-      // console.log("_dataGTM ", _dataGTM);
-      if (!_dataGTM) {
-        gtmData.save().then((dataSave) => {
-          // console.log("dataSave ", dataSave);
-          // res.send({ message: "save data ok", sendData: dataSave });
-          res.status(200).send({ message: "save data ok", sendData: dataSave });
-        });
+  // DataGTM.findOne(
+  //   { convUserId: req.body.convUserId },
+  //   function (err, _dataGTM) {
+  //     // console.log("_dataGTM ", _dataGTM);
+  //     if (!_dataGTM) {
+  //       gtmData.save().then((dataSave) => {
+  //         // console.log("dataSave ", dataSave);
+  //         // res.send({ message: "save data ok", sendData: dataSave });
+  //         res.status(200).send({ message: "save data ok", sendData: dataSave });
+  //       });
+  //     }
+  //   }
+  // );
+
+  console.log("gtmData --------", gtmData);
+  if (gtmData.utm_source && gtmData.utm_medium) {
+    console.log("Save db --------");
+    console.log("utm_source ", gtmData.utm_source);
+    console.log("utm_medium ", gtmData.utm_medium);
+    DataGTM.findOne(
+      { convUserId: req.body.convUserId },
+      function (err, _dataGTM) {
+        // console.log("_dataGTM ", _dataGTM);
+        if (!_dataGTM) {
+          gtmData.save().then((dataSave) => {
+            // console.log("dataSave ", dataSave);
+            // res.send({ message: "save data ok", sendData: dataSave });
+            res
+              .status(200)
+              .send({ message: "save data ok", sendData: dataSave });
+          });
+        }
       }
-    }
-  );
+    );
+  } else {
+    console.log("Don't Save db --------");
+    console.log("utm_source ", gtmData.utm_source);
+    console.log("utm_medium ", gtmData.utm_medium);
+  }
 };
 //
 
