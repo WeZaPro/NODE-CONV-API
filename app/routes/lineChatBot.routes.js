@@ -115,7 +115,17 @@ module.exports = (app) => {
       );
 
       const accessToken = response.data.access_token;
-      res.send(`Access Token: ${accessToken}`);
+      // res.send(`Access Token: ${accessToken}`);
+
+      if (accessToken) {
+        // ถ้าทุกอย่างถูกต้อง redirect ไปที่ Vue.js หน้า Home
+        res.redirect(
+          `https://vue-line-liff-conversion.onrender.com?token=${accessToken}`
+        );
+      } else {
+        // ถ้าเกิดข้อผิดพลาด redirect ไปหน้า Error
+        res.redirect("https://vue-line-liff-conversion.onrender.com");
+      }
     } catch (error) {
       console.error(
         "Error exchanging code for access token:",
