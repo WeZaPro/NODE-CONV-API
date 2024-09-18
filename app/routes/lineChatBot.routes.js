@@ -3,6 +3,9 @@ module.exports = (app) => {
   const lineBot = require("../controllers/lineChatBot.controller");
 
   var router = require("express").Router();
+  const axios = require("axios");
+  const bodyParser = require("body-parser");
+  app.use(bodyParser.urlencoded({ extended: true }));
 
   app.get("/webhook", lineBot.getChat);
   app.post("/webhook", lineBot.chat);
@@ -81,6 +84,43 @@ module.exports = (app) => {
   //     console.error("Error getting profile:", err);
   //   }
   // });
+
+  const clientId = process.env.clientId;
+  const clientSecret = process.env.channelSecret;
+  const redirectUri = process.env.redirectUri;
+
+  app.get("/callback", async (req, res) => {
+    const authorizationCode = req.query.code;
+    const state = req.query.state;
+
+    if (!authorizationCode) {
+      return res.status(400).send("Authorization code is missing");
+    }
+
+    try {
+      const response = await axios.post(
+        "https://api.line.me/oauth2/v2.1/token",
+        new URLSearchParams({
+          grant_type: "authorization_code",
+          code: authorizationCode,
+          redirect_uri: redirectUri,
+          client_id: clientId,
+          client_secret: clientSecret,
+        }),
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        }
+      );
+
+      const accessToken = response.data.access_token;
+      res.send(`Access Token: ${accessToken}`);
+    } catch (error) {
+      console.error("Error exchanging code for access token:", error);
+      res.status(500).send("Error exchanging code for access token");
+    }
+  });
 
   app.post("/findConvUidToUpdateLineUid", async (req, res) => {
     const db = require("../models");
