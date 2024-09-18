@@ -90,8 +90,8 @@ module.exports = (app) => {
   const redirectUri = process.env.redirectUri;
 
   app.get("/callback", async (req, res) => {
+    console.log("req.body ", req.body);
     const authorizationCode = req.query.code;
-    const state = req.query.state;
 
     if (!authorizationCode) {
       return res.status(400).send("Authorization code is missing");
@@ -117,8 +117,20 @@ module.exports = (app) => {
       const accessToken = response.data.access_token;
       res.send(`Access Token: ${accessToken}`);
     } catch (error) {
-      console.error("Error exchanging code for access token:", error);
-      res.status(500).send("Error exchanging code for access token");
+      console.error(
+        "Error exchanging code for access token:",
+        error.response ? error.response.data : error.message
+      );
+      // ส่งข้อผิดพลาดที่เจอไปยังผู้ใช้
+      res
+        .status(500)
+        .send(
+          `Error exchanging code for access token: ${
+            error.response
+              ? error.response.data.error_description
+              : error.message
+          }`
+        );
     }
   });
 
