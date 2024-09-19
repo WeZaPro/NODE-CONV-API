@@ -91,6 +91,10 @@ module.exports = (app) => {
 
   app.get("/callback", async (req, res) => {
     console.log("req.body ", req.body);
+    const requestUrl = req.originalUrl;
+
+    console.log("Request URL:", requestUrl);
+
     const authorizationCode = req.query.code;
 
     if (!authorizationCode) {
@@ -123,11 +127,11 @@ module.exports = (app) => {
         //https://vue-line-liff-conversion.onrender.com
         //https://schoolshopliffweb.onrender.com
         res.redirect(
-          `https://schoolshopliffweb.onrender.com?token=${accessToken}`
+          `https://vue-line-liff-conversion.onrender.com?token=${accessToken}`
         );
       } else {
         // ถ้าเกิดข้อผิดพลาด redirect ไปหน้า Error
-        res.redirect("https://schoolshopliffweb.onrender.com");
+        res.redirect("https://vue-line-liff-conversion.onrender.com");
       }
     } catch (error) {
       console.error(
