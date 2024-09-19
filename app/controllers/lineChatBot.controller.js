@@ -331,12 +331,13 @@ exports.sendMessageFromWeb = async (req, res) => {
 
 exports.lineTest = async (req, res) => {
   console.log("req.body.events ", req.body.events[0]);
-  console.log("req.body ", req.body);
+  console.log("req.body.destination ", req.body.destination);
   res.send({ message: "testLine" });
 };
 
 exports.lineUser = async (req, res) => {
-  console.log("req.body ", req.body);
+  // console.log("req.body ", req.body);
+  console.log("req.body.destination ", req.body.destination);
   console.log("req.body.events ", req.body.events[0]);
   // console.log("req.body.destination ", req.body.destination);
   // console.log("userId ", req.body.events[0].source.userId);
@@ -355,6 +356,102 @@ exports.lineUser = async (req, res) => {
   //   gg_keyword: req.body.gg_keyword,
   // });
   // const filter = { lineUid: lineUid };
+  const userId = req.body.events[0].source.userId;
+  const profile = await client.getProfile(userId);
+
+  //ADD FRIEND
+  const addNewFriend = {
+    measurement_id: "G-BF1T8ZNXZQ",
+    secret_value: "C2sGHFZaRF6MA0KQ_igkiA",
+    event: "addFriend",
+  };
+
+  const purchase = {
+    measurement_id: "G-BF1T8ZNXZQ",
+    secret_value: "NMsz4YtcS0SlSoFV-jK-uQ",
+    event: "PurchaseA",
+  };
+
+  const interest = {
+    measurement_id: "G-BF1T8ZNXZQ",
+    secret_value: "_UBms8ItRX2nl49klAVNVw",
+    event: "interest",
+  };
+
+  try {
+    if (
+      req.body.events[0].type == "message" ||
+      req.body.events[0].type == "text"
+    ) {
+      console.log(
+        "TYPE Message============> ",
+        req.body.events[0].message.text
+      );
+      const getText = req.body.events[0].message.text;
+      let messageBack = ""; // Use let instead of const to allow reassignment
+
+      const checkTextA = "สนใจ";
+      const checkTextB = "สั่งซื้อ";
+      const isInterest = getText.includes(checkTextA);
+      const isPurchase = getText.includes(checkTextB);
+      // console.log("isInterest ", isInterest);
+
+      if (isInterest) {
+        // console.log("interest case");
+        messageBack = `${checkTextA} = interest case`;
+        await fnAddConv(userId, interest);
+        // ส่งข้อความตอบกลับผู้ใช้
+        return client.replyMessage(req.body.events[0].replyToken, {
+          type: "text",
+          text: `SEND CASE ${messageBack}! `,
+        });
+      } else if (isPurchase) {
+        // console.log("purchase case");
+        messageBack = `${checkTextB} = purchase case`;
+        await fnAddConv(userId, purchase);
+        // ส่งข้อความตอบกลับผู้ใช้
+        return client.replyMessage(req.body.events[0].replyToken, {
+          type: "text",
+          text: `SEND CASE ${messageBack}! `,
+        });
+      } else {
+        // console.log("default case");
+        messageBack = "default case";
+        // ส่งข้อความตอบกลับผู้ใช้
+        // return client.replyMessage(req.body.events[0].replyToken, {
+        //   type: "text",
+        //   text: `SEND CASE ${messageBack}! `,
+        // });
+      }
+    } else if (req.body.events[0].type == "follow") {
+      console.log("TYPE FOLLOW============> ");
+      // const userId = req.body.events[0].source.userId;
+      // const profile = await client.getProfile(userId);
+      // console.log("User Profile:", profile);
+
+      await fnAddConv(userId, addNewFriend);
+
+      // ส่งข้อความตอบกลับผู้ใช้
+      return client.replyMessage(req.body.events[0].replyToken, {
+        type: "text",
+        text: `Hello ${profile.displayName}! Your user ID is ${profile.userId}.`,
+      });
+    }
+  } catch (err) {
+    console.error("Error getting profile:", err);
+  }
+
+  // res.send("test");
+};
+
+exports.lineUserTest = async (req, res) => {
+  // console.log("req.body ", req.body);
+  console.log("req.body.destination ", req.body.destination);
+  console.log("req.body.events ", req.body.events[0]);
+  // console.log("req.body.destination ", req.body.destination);
+  // console.log("userId ", req.body.events[0].source.userId);
+  const lineUid = req.body.events[0].source.userId;
+
   const userId = req.body.events[0].source.userId;
   const profile = await client.getProfile(userId);
 
