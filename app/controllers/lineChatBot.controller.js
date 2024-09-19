@@ -338,6 +338,7 @@ exports.lineCheckDestination = async (req, res) => {
 };
 
 exports.lineUser = async (req, res) => {
+  console.log("Req >>>>>>>>>>>>>>> ", req);
   // check destination
   const BotMarketing_Destination = "U07ab7da94695cca39e6333e9a7db7ba7";
   const AccessToken_BotMarketing =
