@@ -540,7 +540,9 @@ const fnAddConv = async function (userId, getEnv) {
 };
 
 const sendToGa4 = async function (userId, getEnv) {
-  console.log("sendToGa4 ", userId);
+  console.log("sendToGa4 ");
+  console.log("userId ", userId);
+  console.log("getEnv ", getEnv);
 
   // Find the document in the database
   DataGTM.findOne({ lineUid: userId }, function (err, _dataGTM) {
