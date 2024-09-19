@@ -358,16 +358,16 @@ exports.lineUser = async (req, res) => {
   const AccessToken_SiriBot =
     "XMJ7WeHHv/jhWWGEeDqV3PxO7fuxAtRumykv5/hm4ZqD+dQac2XtZiQySQavmI38CcwkeucAeTgiVRg1nyv6bE95TkrNDURLRYqM1PjmgfkZ7EQHWiBT5/sIAhIs7iyr6FAKSBvTEX3bfmKVVKGB4gdB04t89/1O/w1cDnyilFU=";
   const channelSecret_SiriBot = "894bf30e64cb28fff808ce93ffb19230";
-  const SiriBot_ga4_id = "G-98GE0SHGWW";
+  const SiriBot_ga4_id = "G-041ZG8ZZ50";
   //
   const SiriBot_ga4_event_addNewFriend = "addFriend";
-  const SiriBot_ga4_secret_addNewFriend = "rqsByShKTp-X46VG0gA4nQ";
+  const SiriBot_ga4_secret_addNewFriend = "ERh5RV41TVOQORPAFcJaKw";
   //
   const SiriBot_ga4_event_purchase = "PurchaseA";
-  const SiriBot_ga4_secret_purchase = "B3XEmJPTTOCLfblVvqjKJQ";
+  const SiriBot_ga4_secret_purchase = "FVxfTVDPSFuV78wK3Fv4fQ";
   //
   const SiriBot_ga4_event_interest = "interest";
-  const SiriBot_ga4_secret_interest = "-KdFBZh3TaWRzuh6GMixPg";
+  const SiriBot_ga4_secret_interest = "eF_AC5SeRxi2BwCBZok5Yw";
   //-------------------------------------------------------------------------------
 
   let channel_access_token = "";
