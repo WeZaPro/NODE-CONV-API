@@ -339,14 +339,34 @@ exports.lineCheckDestination = async (req, res) => {
 
 exports.lineUser = async (req, res) => {
   // check destination
-  // init line token + secret channel
-  const AccessToken_BotA =
+  const BotMarketing_Destination = "U07ab7da94695cca39e6333e9a7db7ba7";
+  const AccessToken_BotMarketing =
     "tvb2bkJUvF5ZbSzAf9WDSmfwbwRDxI/2Nlw1TROa2XbaSAXdySiT1w4OvRQrTWPcZXSWvNn1cwlZtBkjly5fhhubxbIXzxZ5sAqnk0644k4l1ShKzP2MXJxZ50Wd1L0d1Yba6vX1JVDQYA/EBH2DbgdB04t89/1O/w1cDnyilFU=";
-  const channelSecret_BotA = "ed8d53f3b3d65b4f30a12af005f0a510";
+  const channelSecret_BotMarketing = "ed8d53f3b3d65b4f30a12af005f0a510";
+  //----------------
+  const SiriBot_Destination = "U8b1d7e5f0a2986289113cfb14df51e18";
+  const AccessToken_SiriBot =
+    "XMJ7WeHHv/jhWWGEeDqV3PxO7fuxAtRumykv5/hm4ZqD+dQac2XtZiQySQavmI38CcwkeucAeTgiVRg1nyv6bE95TkrNDURLRYqM1PjmgfkZ7EQHWiBT5/sIAhIs7iyr6FAKSBvTEX3bfmKVVKGB4gdB04t89/1O/w1cDnyilFU=";
+  const channelSecret_SiriBot = "894bf30e64cb28fff808ce93ffb19230";
+
+  let channel_access_token = "";
+  let secret_channel = "";
+  //
+  switch (req.body.destination) {
+    case BotMarketing_Destination:
+      msg = "Bot Marketing ==> ";
+      channel_access_token = AccessToken_BotMarketing;
+      break;
+
+    case SiriBot_Destination:
+      msg = "SiriBot ==> ";
+      channel_access_token = AccessToken_SiriBot;
+      break;
+  }
 
   const config_line = {
-    channelAccessToken: AccessToken_BotA,
-    channelSecret: channelSecret_BotA,
+    channelAccessToken: channel_access_token,
+    channelSecret: secret_channel,
   };
   const client_line = new line.Client(config_line);
 
@@ -434,102 +454,6 @@ exports.lineUser = async (req, res) => {
 
       // ส่งข้อความตอบกลับผู้ใช้
       return client_line.replyMessage(req.body.events[0].replyToken, {
-        type: "text",
-        text: `Hello ${profile.displayName}! Your user ID is ${profile.userId}.`,
-      });
-    }
-  } catch (err) {
-    console.error("Error getting profile:", err);
-  }
-
-  // res.send("test");
-};
-
-exports.lineUserTest = async (req, res) => {
-  // console.log("req.body ", req.body);
-  console.log("req.body.destination ", req.body.destination);
-  console.log("req.body.events ", req.body.events[0]);
-  // console.log("req.body.destination ", req.body.destination);
-  // console.log("userId ", req.body.events[0].source.userId);
-  const lineUid = req.body.events[0].source.userId;
-
-  const userId = req.body.events[0].source.userId;
-  const profile = await client.getProfile(userId);
-
-  //ADD FRIEND
-  const addNewFriend = {
-    measurement_id: "G-BF1T8ZNXZQ",
-    secret_value: "C2sGHFZaRF6MA0KQ_igkiA",
-    event: "addFriend",
-  };
-
-  const purchase = {
-    measurement_id: "G-BF1T8ZNXZQ",
-    secret_value: "NMsz4YtcS0SlSoFV-jK-uQ",
-    event: "PurchaseA",
-  };
-
-  const interest = {
-    measurement_id: "G-BF1T8ZNXZQ",
-    secret_value: "_UBms8ItRX2nl49klAVNVw",
-    event: "interest",
-  };
-
-  try {
-    if (
-      req.body.events[0].type == "message" ||
-      req.body.events[0].type == "text"
-    ) {
-      console.log(
-        "TYPE Message============> ",
-        req.body.events[0].message.text
-      );
-      const getText = req.body.events[0].message.text;
-      let messageBack = ""; // Use let instead of const to allow reassignment
-
-      const checkTextA = "สนใจ";
-      const checkTextB = "สั่งซื้อ";
-      const isInterest = getText.includes(checkTextA);
-      const isPurchase = getText.includes(checkTextB);
-      // console.log("isInterest ", isInterest);
-
-      if (isInterest) {
-        // console.log("interest case");
-        messageBack = `${checkTextA} = interest case`;
-        await fnAddConv(userId, interest);
-        // ส่งข้อความตอบกลับผู้ใช้
-        return client.replyMessage(req.body.events[0].replyToken, {
-          type: "text",
-          text: `SEND CASE ${messageBack}! `,
-        });
-      } else if (isPurchase) {
-        // console.log("purchase case");
-        messageBack = `${checkTextB} = purchase case`;
-        await fnAddConv(userId, purchase);
-        // ส่งข้อความตอบกลับผู้ใช้
-        return client.replyMessage(req.body.events[0].replyToken, {
-          type: "text",
-          text: `SEND CASE ${messageBack}! `,
-        });
-      } else {
-        // console.log("default case");
-        messageBack = "default case";
-        // ส่งข้อความตอบกลับผู้ใช้
-        // return client.replyMessage(req.body.events[0].replyToken, {
-        //   type: "text",
-        //   text: `SEND CASE ${messageBack}! `,
-        // });
-      }
-    } else if (req.body.events[0].type == "follow") {
-      console.log("TYPE FOLLOW============> ");
-      // const userId = req.body.events[0].source.userId;
-      // const profile = await client.getProfile(userId);
-      // console.log("User Profile:", profile);
-
-      await fnAddConv(userId, addNewFriend);
-
-      // ส่งข้อความตอบกลับผู้ใช้
-      return client.replyMessage(req.body.events[0].replyToken, {
         type: "text",
         text: `Hello ${profile.displayName}! Your user ID is ${profile.userId}.`,
       });
