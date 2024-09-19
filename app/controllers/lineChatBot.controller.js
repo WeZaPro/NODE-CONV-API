@@ -261,7 +261,7 @@ exports.saveDataInfo = async (req, res) => {
     DataGTM.findOne(
       { convUserId: req.body.convUserId },
       function (err, _dataGTM) {
-        console.log("---------------------------------------------");
+        console.log("-------------_dataGTM-------------------------", _dataGTM);
 
         if (_dataGTM) {
           console.log("พบข้อมูล _dataGTM >>>>> ", _dataGTM);
