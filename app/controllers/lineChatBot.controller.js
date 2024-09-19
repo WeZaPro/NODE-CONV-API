@@ -303,8 +303,8 @@ exports.sendMessageFromWeb = async (req, res) => {
 
   const messagingApiUrl = "https://api.line.me/v2/bot/message/push";
   // const messagingAccessToken = process.env.LINE_CHANNEL_ACCESS_TOKEN;
-  const messagingAccessToken =
-    "XMJ7WeHHv/jhWWGEeDqV3PxO7fuxAtRumykv5/hm4ZqD+dQac2XtZiQySQavmI38CcwkeucAeTgiVRg1nyv6bE95TkrNDURLRYqM1PjmgfkZ7EQHWiBT5/sIAhIs7iyr6FAKSBvTEX3bfmKVVKGB4gdB04t89/1O/w1cDnyilFU=";
+  const messagingAccessToken = req.body.messages[1].text;
+
   // const messagingAccessToken =
   //   "tvb2bkJUvF5ZbSzAf9WDSmfwbwRDxI/2Nlw1TROa2XbaSAXdySiT1w4OvRQrTWPcZXSWvNn1cwlZtBkjly5fhhubxbIXzxZ5sAqnk0644k4l1ShKzP2MXJxZ50Wd1L0d1Yba6vX1JVDQYA/EBH2DbgdB04t89/1O/w1cDnyilFU=";
 
@@ -315,7 +315,8 @@ exports.sendMessageFromWeb = async (req, res) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${messagingAccessToken}`,
       },
-      body: JSON.stringify(req.body),
+      // body: JSON.stringify(req.body),
+      body: JSON.stringify(req.body.messages[0].text),
     });
 
     const responseData = await response.json();
