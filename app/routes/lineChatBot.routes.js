@@ -119,61 +119,9 @@ module.exports = (app) => {
 
       if (accessToken) {
         // ถ้าทุกอย่างถูกต้อง redirect ไปที่ Vue.js หน้า Home
-        res.redirect(
-          `https://vue-line-liff-conversion.onrender.com?token=${accessToken}`
-        );
-      } else {
-        // ถ้าเกิดข้อผิดพลาด redirect ไปหน้า Error
-        res.redirect("https://vue-line-liff-conversion.onrender.com");
-      }
-    } catch (error) {
-      console.error(
-        "Error exchanging code for access token:",
-        error.response ? error.response.data : error.message
-      );
-      // ส่งข้อผิดพลาดที่เจอไปยังผู้ใช้
-      res
-        .status(500)
-        .send(
-          `Error exchanging code for access token: ${
-            error.response
-              ? error.response.data.error_description
-              : error.message
-          }`
-        );
-    }
-  });
 
-  app.get("/callbackDemo", async (req, res) => {
-    console.log("req.body ", req.body);
-    const authorizationCode = req.query.code;
-
-    if (!authorizationCode) {
-      return res.status(400).send("Authorization code is missing");
-    }
-
-    try {
-      const response = await axios.post(
-        "https://api.line.me/oauth2/v2.1/token",
-        new URLSearchParams({
-          grant_type: "authorization_code",
-          code: authorizationCode,
-          redirect_uri: redirectUri,
-          client_id: clientId,
-          client_secret: clientSecret,
-        }),
-        {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-        }
-      );
-
-      const accessToken = response.data.access_token;
-      // res.send(`Access Token: ${accessToken}`);
-
-      if (accessToken) {
-        // ถ้าทุกอย่างถูกต้อง redirect ไปที่ Vue.js หน้า Home
+        //https://vue-line-liff-conversion.onrender.com
+        //https://schoolshopliffweb.onrender.com
         res.redirect(
           `https://schoolshopliffweb.onrender.com?token=${accessToken}`
         );
@@ -198,6 +146,61 @@ module.exports = (app) => {
         );
     }
   });
+
+  // app.get("/callbackDemo", async (req, res) => {
+  //   console.log("req.body ", req.body);
+  //   const authorizationCode = req.query.code;
+
+  //   if (!authorizationCode) {
+  //     return res.status(400).send("Authorization code is missing");
+  //   }
+
+  //   try {
+  //     const response = await axios.post(
+  //       "https://api.line.me/oauth2/v2.1/token",
+  //       new URLSearchParams({
+  //         grant_type: "authorization_code",
+  //         code: authorizationCode,
+  //         redirect_uri: redirectUri,
+  //         client_id: clientId,
+  //         client_secret: clientSecret,
+  //       }),
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/x-www-form-urlencoded",
+  //         },
+  //       }
+  //     );
+
+  //     const accessToken = response.data.access_token;
+  //     // res.send(`Access Token: ${accessToken}`);
+
+  //     if (accessToken) {
+  //       // ถ้าทุกอย่างถูกต้อง redirect ไปที่ Vue.js หน้า Home
+  //       res.redirect(
+  //         `https://schoolshopliffweb.onrender.com?token=${accessToken}`
+  //       );
+  //     } else {
+  //       // ถ้าเกิดข้อผิดพลาด redirect ไปหน้า Error
+  //       res.redirect("https://schoolshopliffweb.onrender.com");
+  //     }
+  //   } catch (error) {
+  //     console.error(
+  //       "Error exchanging code for access token:",
+  //       error.response ? error.response.data : error.message
+  //     );
+  //     // ส่งข้อผิดพลาดที่เจอไปยังผู้ใช้
+  //     res
+  //       .status(500)
+  //       .send(
+  //         `Error exchanging code for access token: ${
+  //           error.response
+  //             ? error.response.data.error_description
+  //             : error.message
+  //         }`
+  //       );
+  //   }
+  // });
 
   app.post("/findConvUidToUpdateLineUid", async (req, res) => {
     const db = require("../models");
