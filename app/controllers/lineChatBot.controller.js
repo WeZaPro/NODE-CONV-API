@@ -252,7 +252,7 @@ exports.saveDataInfo = async (req, res) => {
   //     }
   //   }
   // );
-
+  console.log("-------------IPADDRESS----------------", req.body.ipAddess);
   console.log("gtmData --------", gtmData);
   if (gtmData.utm_source && gtmData.utm_medium) {
     console.log("Save db --------");
@@ -260,7 +260,7 @@ exports.saveDataInfo = async (req, res) => {
     console.log("utm_medium ", gtmData.utm_medium);
     DataGTM.findOne(
       // { convUserId: req.body.convUserId },
-      { ipAddess: req.body.ipAddress },
+      { ipAddess: req.body.ipAddess },
       function (err, _dataGTM) {
         console.log("-------------_dataGTM-------------------------", _dataGTM);
 
