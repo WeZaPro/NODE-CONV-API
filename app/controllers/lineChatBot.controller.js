@@ -294,6 +294,18 @@ exports.sendMessageFromWeb = async (req, res) => {
   // console.log("req.body messages-> ", req.body.messages);
   // console.log("req.body.messages[1].text-> ", req.body.messages[1].text);
 
+  const sendLine = {
+    to: "Ue7435fca0163b1e68944d0f3eb3589ae",
+
+    messages: [
+      {
+        type: "text",
+
+        text: "Hello from Vue.js! | user id : U634375582d774e1c8ce69c31f6f1ba48",
+      },
+    ],
+  };
+
   // ตรวจสอบว่ามี 'to' และ 'messages' หรือไม่
   if (!req.body.to || !req.body.messages) {
     return res
@@ -315,7 +327,8 @@ exports.sendMessageFromWeb = async (req, res) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${messagingAccessToken}`,
       },
-      body: JSON.stringify(req.body),
+      // body: JSON.stringify(req.body),
+      body: JSON.stringify(sendLine),
     });
 
     const responseData = await response.json();
