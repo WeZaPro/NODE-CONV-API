@@ -91,11 +91,10 @@ module.exports = (app) => {
 
   app.get("/callback", async (req, res) => {
     // console.log("req ", req);
-    // const requestUrl = req.originalUrl;
-    const requestUrl = "";
-    const state = req.query.state;
-    requestUrl = state;
+    const requestUrl = req.originalUrl;
     console.log("Request URL:", requestUrl);
+    const state = req.query.state;
+    console.log("state>>>>> ", state);
 
     const authorizationCode = req.query.code;
 
@@ -128,10 +127,10 @@ module.exports = (app) => {
 
         //https://vue-line-liff-conversion.onrender.com
         //https://schoolshopliffweb.onrender.com
-        res.redirect(`${requestUrl}?token=${accessToken}`);
+        res.redirect(`${state}?token=${accessToken}`);
       } else {
         // ถ้าเกิดข้อผิดพลาด redirect ไปหน้า Error
-        res.redirect(requestUrl);
+        res.redirect(state);
       }
     } catch (error) {
       console.error(
@@ -151,60 +150,60 @@ module.exports = (app) => {
     }
   });
 
-  app.get("/callbackA", async (req, res) => {
-    console.log("req.body ", req.body);
-    const authorizationCode = req.query.code;
+  // app.get("/callbackA", async (req, res) => {
+  //   console.log("req.body ", req.body);
+  //   const authorizationCode = req.query.code;
 
-    if (!authorizationCode) {
-      return res.status(400).send("Authorization code is missing");
-    }
+  //   if (!authorizationCode) {
+  //     return res.status(400).send("Authorization code is missing");
+  //   }
 
-    try {
-      const response = await axios.post(
-        "https://api.line.me/oauth2/v2.1/token",
-        new URLSearchParams({
-          grant_type: "authorization_code",
-          code: authorizationCode,
-          redirect_uri: redirectUri,
-          client_id: clientId,
-          client_secret: clientSecret,
-        }),
-        {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-        }
-      );
+  //   try {
+  //     const response = await axios.post(
+  //       "https://api.line.me/oauth2/v2.1/token",
+  //       new URLSearchParams({
+  //         grant_type: "authorization_code",
+  //         code: authorizationCode,
+  //         redirect_uri: redirectUri,
+  //         client_id: clientId,
+  //         client_secret: clientSecret,
+  //       }),
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/x-www-form-urlencoded",
+  //         },
+  //       }
+  //     );
 
-      const accessToken = response.data.access_token;
-      // res.send(`Access Token: ${accessToken}`);
+  //     const accessToken = response.data.access_token;
+  //     // res.send(`Access Token: ${accessToken}`);
 
-      if (accessToken) {
-        // ถ้าทุกอย่างถูกต้อง redirect ไปที่ Vue.js หน้า Home
-        res.redirect(
-          `https://schoolshopliffweb.onrender.com?token=${accessToken}`
-        );
-      } else {
-        // ถ้าเกิดข้อผิดพลาด redirect ไปหน้า Error
-        res.redirect("https://schoolshopliffweb.onrender.com");
-      }
-    } catch (error) {
-      console.error(
-        "Error exchanging code for access token:",
-        error.response ? error.response.data : error.message
-      );
-      // ส่งข้อผิดพลาดที่เจอไปยังผู้ใช้
-      res
-        .status(500)
-        .send(
-          `Error exchanging code for access token: ${
-            error.response
-              ? error.response.data.error_description
-              : error.message
-          }`
-        );
-    }
-  });
+  //     if (accessToken) {
+  //       // ถ้าทุกอย่างถูกต้อง redirect ไปที่ Vue.js หน้า Home
+  //       res.redirect(
+  //         `https://schoolshopliffweb.onrender.com?token=${accessToken}`
+  //       );
+  //     } else {
+  //       // ถ้าเกิดข้อผิดพลาด redirect ไปหน้า Error
+  //       res.redirect("https://schoolshopliffweb.onrender.com");
+  //     }
+  //   } catch (error) {
+  //     console.error(
+  //       "Error exchanging code for access token:",
+  //       error.response ? error.response.data : error.message
+  //     );
+  //     // ส่งข้อผิดพลาดที่เจอไปยังผู้ใช้
+  //     res
+  //       .status(500)
+  //       .send(
+  //         `Error exchanging code for access token: ${
+  //           error.response
+  //             ? error.response.data.error_description
+  //             : error.message
+  //         }`
+  //       );
+  //   }
+  // });
 
   app.post("/findConvUidToUpdateLineUid", async (req, res) => {
     const db = require("../models");
