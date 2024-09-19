@@ -577,6 +577,8 @@ const sendToGa4 = async function (userId, getEnv) {
       ],
     });
 
+    console.log("raw data to GA4 >>>>>>> ", raw);
+
     const requestOptions = {
       method: "POST",
       headers: myHeaders,
