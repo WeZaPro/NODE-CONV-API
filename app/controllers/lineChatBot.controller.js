@@ -292,6 +292,7 @@ exports.saveDataInfo = async (req, res) => {
 exports.sendMessageFromWeb = async (req, res) => {
   console.log("req.body -> ", req.body);
   console.log("req.body messages-> ", req.body.messages);
+  console.log("req.body.messages[1].text-> ", req.body.messages[1].text);
 
   // ตรวจสอบว่ามี 'to' และ 'messages' หรือไม่
   if (!req.body.to || !req.body.messages) {
