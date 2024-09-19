@@ -343,24 +343,68 @@ exports.lineUser = async (req, res) => {
   const AccessToken_BotMarketing =
     "tvb2bkJUvF5ZbSzAf9WDSmfwbwRDxI/2Nlw1TROa2XbaSAXdySiT1w4OvRQrTWPcZXSWvNn1cwlZtBkjly5fhhubxbIXzxZ5sAqnk0644k4l1ShKzP2MXJxZ50Wd1L0d1Yba6vX1JVDQYA/EBH2DbgdB04t89/1O/w1cDnyilFU=";
   const channelSecret_BotMarketing = "ed8d53f3b3d65b4f30a12af005f0a510";
-  //----------------
+  const BotMarketing_ga4_id = "G-BF1T8ZNXZQ";
+  //
+  const BotMarketing_ga4_event_addNewFriend = "addFriend";
+  const BotMarketing_ga4_secret_addNewFriend = "C2sGHFZaRF6MA0KQ_igkiA";
+  //
+  const BotMarketing_ga4_event_purchase = "PurchaseA";
+  const BotMarketing_ga4_secret__purchase = "NMsz4YtcS0SlSoFV-jK-uQ";
+  //
+  const BotMarketing_ga4_event_interest = "interest";
+  const BotMarketing_ga4_secret_interest = "_UBms8ItRX2nl49klAVNVw";
+  //-----------------------------------------------------------------------------------------------------------------
   const SiriBot_Destination = "U8b1d7e5f0a2986289113cfb14df51e18";
   const AccessToken_SiriBot =
     "XMJ7WeHHv/jhWWGEeDqV3PxO7fuxAtRumykv5/hm4ZqD+dQac2XtZiQySQavmI38CcwkeucAeTgiVRg1nyv6bE95TkrNDURLRYqM1PjmgfkZ7EQHWiBT5/sIAhIs7iyr6FAKSBvTEX3bfmKVVKGB4gdB04t89/1O/w1cDnyilFU=";
   const channelSecret_SiriBot = "894bf30e64cb28fff808ce93ffb19230";
+  const SiriBot_ga4_id = "G-98GE0SHGWW";
+  //
+  const SiriBot_ga4_event_addNewFriend = "addFriend";
+  const SiriBot_ga4_secret_addNewFriend = "rqsByShKTp-X46VG0gA4nQ";
+  //
+  const SiriBot_ga4_event_purchase = "PurchaseA";
+  const SiriBot_ga4_secret_purchase = "B3XEmJPTTOCLfblVvqjKJQ";
+  //
+  const SiriBot_ga4_event_interest = "interest";
+  const SiriBot_ga4_secret_interest = "-KdFBZh3TaWRzuh6GMixPg";
+  //-------------------------------------------------------------------------------
 
   let channel_access_token = "";
   let secret_channel = "";
+  //
+  let _ga4_id = "";
+  let _addNewFriend_secret = "";
+  let _addNewFriend_event = "";
+  let _purchaseA_secret = "";
+  let _purchaseA_event = "";
+  let _interest_secret = "";
+  let _interest_event = "";
   //
   switch (req.body.destination) {
     case BotMarketing_Destination:
       msg = "Bot Marketing ==> ";
       channel_access_token = AccessToken_BotMarketing;
+      _ga4_id = BotMarketing_ga4_id;
+      _addNewFriend_secret = BotMarketing_ga4_secret_addNewFriend;
+      _addNewFriend_event = BotMarketing_ga4_event_addNewFriend;
+      _purchaseA_secret = BotMarketing_ga4_secret__purchase;
+      _purchaseA_event = BotMarketing_ga4_event_purchase;
+      _interest_secret = BotMarketing_ga4_secret_interest;
+      _interest_event = BotMarketing_ga4_event_interest;
       break;
 
     case SiriBot_Destination:
       msg = "SiriBot ==> ";
       channel_access_token = AccessToken_SiriBot;
+      //
+      _ga4_id = SiriBot_ga4_id;
+      _addNewFriend_secret = SiriBot_ga4_secret_addNewFriend;
+      _addNewFriend_event = SiriBot_ga4_event_addNewFriend;
+      _purchaseA_secret = SiriBot_ga4_secret_purchase;
+      _purchaseA_event = SiriBot_ga4_event_purchase;
+      _interest_secret = SiriBot_ga4_event_interest;
+      _interest_event = SiriBot_ga4_secret_interest;
       break;
   }
 
@@ -382,21 +426,21 @@ exports.lineUser = async (req, res) => {
 
   //ADD FRIEND
   const addNewFriend = {
-    measurement_id: "G-BF1T8ZNXZQ",
-    secret_value: "C2sGHFZaRF6MA0KQ_igkiA",
-    event: "addFriend",
+    measurement_id: _ga4_id,
+    secret_value: _addNewFriend_secret,
+    event: _addNewFriend_event,
   };
 
   const purchase = {
-    measurement_id: "G-BF1T8ZNXZQ",
-    secret_value: "NMsz4YtcS0SlSoFV-jK-uQ",
-    event: "PurchaseA",
+    measurement_id: _ga4_id,
+    secret_value: _purchaseA_secret,
+    event: _purchaseA_event,
   };
 
   const interest = {
-    measurement_id: "G-BF1T8ZNXZQ",
-    secret_value: "_UBms8ItRX2nl49klAVNVw",
-    event: "interest",
+    measurement_id: _ga4_id,
+    secret_value: _interest_secret,
+    event: _interest_event,
   };
 
   try {

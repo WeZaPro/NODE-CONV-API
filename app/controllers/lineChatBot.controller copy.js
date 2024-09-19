@@ -5,6 +5,16 @@ const DataGTM = db.userGtms;
 require("dotenv").config();
 const liff = require("@line/liff");
 
+// API CHAT BOT
+const line = require("@line/bot-sdk");
+// check channel access token + channel Secret
+
+const config = {
+  channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN,
+  channelSecret: process.env.channelSecret,
+};
+const client = new line.Client(config);
+
 // let channelAccessToken = process.env.LINE_CHANNEL_ACCESS_TOKEN;
 let channelAccessToken = process.env.LINE_CHANNEL_ACCESS_TOKEN;
 
@@ -223,11 +233,28 @@ exports.saveDataInfo = async (req, res) => {
     userAgent: req.body.userAgent,
     ipAddess: req.body.ipAddess,
     clientID: req.body.clientID,
+    utm_campaign: req.body.utm_campaign,
     utm_source: req.body.utm_source,
     utm_medium: req.body.utm_medium,
     utm_term: req.body.utm_term,
-    gg_ketword: req.body.gg_ketword,
+    gg_keyword: req.body.gg_keyword,
+    session_id: req.body.session_id,
   });
+
+  // DataGTM.findOne(
+  //   { convUserId: req.body.convUserId },
+  //   function (err, _dataGTM) {
+  //     // console.log("_dataGTM ", _dataGTM);
+  //     if (!_dataGTM) {
+  //       gtmData.save().then((dataSave) => {
+  //         // console.log("dataSave ", dataSave);
+  //         // res.send({ message: "save data ok", sendData: dataSave });
+  //         res.status(200).send({ message: "save data ok", sendData: dataSave });
+  //       });
+  //     }
+  //   }
+  // );
+  console.log("-------------IPADDRESS----------------", req.body.ipAddess);
   console.log("gtmData --------", gtmData);
   if (gtmData.utm_source && gtmData.utm_medium) {
     console.log("Save db --------");
@@ -235,9 +262,14 @@ exports.saveDataInfo = async (req, res) => {
     console.log("utm_medium ", gtmData.utm_medium);
     DataGTM.findOne(
       { convUserId: req.body.convUserId },
+      // { ipAddess: req.body.ipAddess },
       function (err, _dataGTM) {
-        // console.log("_dataGTM ", _dataGTM);
-        if (!_dataGTM) {
+        console.log("-------------_dataGTM-------------------------", _dataGTM);
+
+        if (_dataGTM) {
+          console.log("พบข้อมูล _dataGTM >>>>> ", _dataGTM);
+        } else {
+          console.log("ไม่พบข้อมูล _dataGTM  & SAVE >>>>> ", _dataGTM);
           gtmData.save().then((dataSave) => {
             // console.log("dataSave ", dataSave);
             // res.send({ message: "save data ok", sendData: dataSave });
@@ -249,7 +281,8 @@ exports.saveDataInfo = async (req, res) => {
       }
     );
   } else {
-    console.log("Don't Save db --------");
+    console.log("---------------------------------------------");
+    console.log("Don't Save db ขาดข้อมูล UTM --------");
     console.log("utm_source ", gtmData.utm_source);
     console.log("utm_medium ", gtmData.utm_medium);
   }
@@ -298,71 +331,287 @@ exports.sendMessageFromWeb = async (req, res) => {
   }
 };
 
-// function samplePayload() {
-//   console.log("test send payLoad-->");
-//   return [
-//     {
-//       type: "template",
-//       altText: "this is a confirm template",
-//       template: {
-//         columns: [
-//           {
-//             title: "เบียร์สด หรือ นามะบีรุ",
-//             actions: [
-//               {
-//                 type: "uri",
-//                 uri: "https://liff.line.me/2001254953-w391eWy1",
-//                 label: "รายละเอียด",
-//               },
-//             ],
-//             text: "เป็นเครื่องดื่มที่ทางร้านนาเอบะขาดไม่ได้เลย ลูกค้ามักจะถามถึงเป็นอันดับแรก",
-//             thumbnailImageUrl:
-//               "https://naebaizakaya.com/wp-content/uploads/2023/11/1-1.jpg",
-//           },
-//           {
-//             actions: [
-//               {
-//                 type: "uri",
-//                 uri: "https://liff.line.me/2001254953-w391eWy1",
-//                 label: "รายละเอียด",
-//               },
-//             ],
-//             title: "เมนูเสียบไม้ หรือ ยากิโทริ",
-//             text: "ยากิโทริคือไก่ย่างเสียบไม้โดยจะมีไก่หลายส่วนให้เลือก",
-//             thumbnailImageUrl:
-//               "https://naebaizakaya.com/wp-content/uploads/2023/11/2-2.jpg",
-//           },
-//           {
-//             text: "เป็นเครื่องดื่มอีกชนิดที่ลูกค้าที่ร้านนาเอบะชอบสั่งมาดื่มกัน มีรสชาติหวานอมเปรี้ยว",
-//             thumbnailImageUrl:
-//               "https://naebaizakaya.com/wp-content/uploads/2023/11/3-1.jpg",
-//             actions: [
-//               {
-//                 label: "รายละเอียด",
-//                 uri: "https://liff.line.me/2001254953-w391eWy1",
-//                 type: "uri",
-//               },
-//             ],
-//             title: "เหล้าบ๊วย หรือ อุเมะชุ",
-//           },
-//           {
-//             title: "หม้อไฟ หรือ นาเบะ",
-//             actions: [
-//               {
-//                 type: "uri",
-//                 label: "รายละเอียด",
-//                 uri: "https://liff.line.me/2001254953-w391eWy1",
-//               },
-//             ],
-//             text: "คืออาหารที่ใส่ผัก,เห็ด,เนื้อสัตว์,เต้าหู้ และเส้น ลงในหม้อแล้วพร้อมเสริฟ",
-//             thumbnailImageUrl:
-//               "https://naebaizakaya.com/wp-content/uploads/2023/11/4-1.jpg",
-//           },
-//         ],
-//         type: "carousel",
-//         imageSize: "cover",
-//         imageAspectRatio: "square",
-//       },
-//     },
-//   ];
-// }
+exports.lineCheckDestination = async (req, res) => {
+  console.log("req.body.events ", req.body.events[0]);
+  console.log("req.body.destination ", req.body.destination);
+  res.send({ message: "testLine" });
+};
+
+exports.lineUser = async (req, res) => {
+  // check destination
+  const BotMarketing_Destination = "U07ab7da94695cca39e6333e9a7db7ba7";
+  const AccessToken_BotMarketing =
+    "tvb2bkJUvF5ZbSzAf9WDSmfwbwRDxI/2Nlw1TROa2XbaSAXdySiT1w4OvRQrTWPcZXSWvNn1cwlZtBkjly5fhhubxbIXzxZ5sAqnk0644k4l1ShKzP2MXJxZ50Wd1L0d1Yba6vX1JVDQYA/EBH2DbgdB04t89/1O/w1cDnyilFU=";
+  const channelSecret_BotMarketing = "ed8d53f3b3d65b4f30a12af005f0a510";
+  const BotMarketing_ga4_id = "G-BF1T8ZNXZQ";
+  //
+  const BotMarketing_ga4_event_addNewFriend = "addFriend";
+  const BotMarketing_ga4_secret_addNewFriend = "C2sGHFZaRF6MA0KQ_igkiA";
+  //
+  const BotMarketing_ga4_event_purchase = "PurchaseA";
+  const BotMarketing_ga4_secret__purchase = "NMsz4YtcS0SlSoFV-jK-uQ";
+  //
+  const BotMarketing_ga4_event_interest = "interest";
+  const BotMarketing_ga4_secret_interest = "_UBms8ItRX2nl49klAVNVw";
+  //-----------------------------------------------------------------------------------------------------------------
+  const SiriBot_Destination = "U8b1d7e5f0a2986289113cfb14df51e18";
+  const AccessToken_SiriBot =
+    "XMJ7WeHHv/jhWWGEeDqV3PxO7fuxAtRumykv5/hm4ZqD+dQac2XtZiQySQavmI38CcwkeucAeTgiVRg1nyv6bE95TkrNDURLRYqM1PjmgfkZ7EQHWiBT5/sIAhIs7iyr6FAKSBvTEX3bfmKVVKGB4gdB04t89/1O/w1cDnyilFU=";
+  const channelSecret_SiriBot = "894bf30e64cb28fff808ce93ffb19230";
+  const SiriBot_ga4_id = "";
+  //
+  const SiriBot_ga4_event_addNewFriend = "";
+  const SiriBot_ga4_secret_addNewFriend = "";
+  //
+  const SiriBot_ga4_event_purchase = "";
+  const SiriBot_ga4_secret_purchase = "";
+  //
+  const SiriBot_ga4_event_interest = "";
+  const SiriBot_ga4_secret_interest = "";
+  //-------------------------------------------------------------------------------
+
+  let channel_access_token = "";
+  let secret_channel = "";
+  //
+  let _ga4_id = "";
+  let _addNewFriend_secret = "";
+  let _addNewFriend_event = "";
+  let _purchaseA_secret = "";
+  let _purchaseA_event = "";
+  let _interest_secret = "";
+  let _interest_event = "";
+  //
+  switch (req.body.destination) {
+    case BotMarketing_Destination:
+      msg = "Bot Marketing ==> ";
+      channel_access_token = AccessToken_BotMarketing;
+      _ga4_id = BotMarketing_ga4_id;
+      _addNewFriend_secret = BotMarketing_ga4_secret_addNewFriend;
+      _addNewFriend_event = BotMarketing_ga4_event_addNewFriend;
+      _purchaseA_secret = BotMarketing_ga4_secret__purchase;
+      _purchaseA_event = BotMarketing_ga4_event_purchase;
+      _interest_secret = BotMarketing_ga4_secret_interest;
+      _interest_event = BotMarketing_ga4_event_interest;
+      break;
+
+    case SiriBot_Destination:
+      msg = "SiriBot ==> ";
+      channel_access_token = AccessToken_SiriBot;
+      //
+      _ga4_id = SiriBot_ga4_id;
+      _addNewFriend_secret = SiriBot_ga4_secret_addNewFriend;
+      _addNewFriend_event = SiriBot_ga4_event_addNewFriend;
+      _purchaseA_secret = SiriBot_ga4_secret_purchase;
+      _purchaseA_event = SiriBot_ga4_event_purchase;
+      _interest_secret = SiriBot_ga4_event_interest;
+      _interest_event = SiriBot_ga4_secret_interest;
+      break;
+  }
+
+  const config_line = {
+    channelAccessToken: channel_access_token,
+    channelSecret: secret_channel,
+  };
+  const client_line = new line.Client(config_line);
+
+  // console.log("req.body ", req.body);
+  console.log("req.body.destination ", req.body.destination);
+  console.log("req.body.events ", req.body.events[0]);
+  // console.log("req.body.destination ", req.body.destination);
+  // console.log("userId ", req.body.events[0].source.userId);
+  const lineUid = req.body.events[0].source.userId;
+
+  const userId = req.body.events[0].source.userId;
+  const profile = await client_line.getProfile(userId);
+
+  //ADD FRIEND
+  const addNewFriend = {
+    measurement_id: "G-BF1T8ZNXZQ",
+    secret_value: "C2sGHFZaRF6MA0KQ_igkiA",
+    event: "addFriend",
+  };
+
+  const purchase = {
+    measurement_id: "G-BF1T8ZNXZQ",
+    secret_value: "NMsz4YtcS0SlSoFV-jK-uQ",
+    event: "PurchaseA",
+  };
+
+  const interest = {
+    measurement_id: "G-BF1T8ZNXZQ",
+    secret_value: "_UBms8ItRX2nl49klAVNVw",
+    event: "interest",
+  };
+
+  try {
+    if (
+      req.body.events[0].type == "message" ||
+      req.body.events[0].type == "text"
+    ) {
+      console.log(
+        "TYPE Message============> ",
+        req.body.events[0].message.text
+      );
+      const getText = req.body.events[0].message.text;
+      let messageBack = ""; // Use let instead of const to allow reassignment
+
+      const checkTextA = "สนใจ";
+      const checkTextB = "สั่งซื้อ";
+      const isInterest = getText.includes(checkTextA);
+      const isPurchase = getText.includes(checkTextB);
+      // console.log("isInterest ", isInterest);
+
+      if (isInterest) {
+        // console.log("interest case");
+        messageBack = `${checkTextA} = interest case`;
+        await fnAddConv(userId, interest);
+        // ส่งข้อความตอบกลับผู้ใช้
+        return client_line.replyMessage(req.body.events[0].replyToken, {
+          type: "text",
+          text: `SEND CASE ${messageBack}! `,
+        });
+      } else if (isPurchase) {
+        // console.log("purchase case");
+        messageBack = `${checkTextB} = purchase case`;
+        await fnAddConv(userId, purchase);
+        // ส่งข้อความตอบกลับผู้ใช้
+        return client_line.replyMessage(req.body.events[0].replyToken, {
+          type: "text",
+          text: `SEND CASE ${messageBack}! `,
+        });
+      } else {
+        // console.log("default case");
+        messageBack = "default case";
+        // ส่งข้อความตอบกลับผู้ใช้
+        // return client.replyMessage(req.body.events[0].replyToken, {
+        //   type: "text",
+        //   text: `SEND CASE ${messageBack}! `,
+        // });
+      }
+    } else if (req.body.events[0].type == "follow") {
+      console.log("TYPE FOLLOW============> ");
+      // const userId = req.body.events[0].source.userId;
+      // const profile = await client.getProfile(userId);
+      // console.log("User Profile:", profile);
+
+      await fnAddConv(userId, addNewFriend);
+
+      // ส่งข้อความตอบกลับผู้ใช้
+      return client_line.replyMessage(req.body.events[0].replyToken, {
+        type: "text",
+        text: `Hello ${profile.displayName}! Your user ID is ${profile.userId}.`,
+      });
+    }
+  } catch (err) {
+    console.error("Error getting profile:", err);
+  }
+
+  // res.send("test");
+};
+
+// };
+
+const fnAddConv = async function (userId, getEnv) {
+  console.log("getEnv ", getEnv);
+  try {
+    let update = "";
+    if (getEnv.event == "addFriend") {
+      update = { addFriend: true };
+    } else if (getEnv.event == "interest") {
+      update = { eventA: true };
+    } else if (getEnv.event == "PurchaseA") {
+      update = { eventB: true };
+    } else {
+      update = { eventC: "na" };
+    }
+
+    const filter = { lineUid: userId };
+
+    // Use the options to return the updated document
+    const addConv = await DataGTM.findOneAndUpdate(filter, update, {
+      new: true,
+    });
+    await sendToGa4(userId, getEnv);
+    console.log("addConv ", addConv);
+    // goto GA4 API Conversion
+  } catch (error) {
+    console.error("Error updating addFriend: ", error);
+  }
+};
+
+const sendToGa4 = async function (userId, getEnv) {
+  console.log("sendToGa4 ", userId);
+
+  // Find the document in the database
+  DataGTM.findOne({ lineUid: userId }, function (err, _dataGTM) {
+    if (err) {
+      console.error("Error finding data: ", err);
+      return;
+    }
+
+    if (!_dataGTM) {
+      console.log("No data found for user: ", userId);
+      return;
+    }
+
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const raw = JSON.stringify({
+      client_id: _dataGTM.clientID,
+      user_properties: { ipAddress: { value: _dataGTM.ipAddess } },
+      events: [
+        {
+          name: getEnv.event,
+          params: {
+            convUserId: _dataGTM.convUserId,
+            campaign: _dataGTM.utm_campaign,
+            source: _dataGTM.utm_source,
+            medium: _dataGTM.utm_medium,
+            term: _dataGTM.utm_term,
+            content: _dataGTM.gg_keyword,
+            session_id: _dataGTM.session_id,
+            // engagement_time_msec: "100",
+          },
+        },
+      ],
+    });
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    const api_secret = getEnv.secret_value; // Corrected 'api_secre' to 'api_secret'
+    const measurement_id = getEnv.measurement_id;
+
+    // Added '&' between the query parameters in the URL
+    fetch(
+      `https://www.google-analytics.com/mp/collect?measurement_id=${measurement_id}&api_secret=${api_secret}`,
+      // "https://www.google-analytics.com/mp/collect?measurement_id=G-BF1T8ZNXZQ&api_secret=Dpl6kV_3TC-FtqFKFQ9Plw",
+      requestOptions
+    )
+      .then((response) => {
+        if (!response.ok) {
+          // Handle error response
+          throw new Error(
+            `Network response was not ok: ${response.statusText}`
+          );
+        }
+
+        // Check if there's any content to parse
+        const contentType = response.headers.get("Content-Type");
+        if (contentType && contentType.includes("application/json")) {
+          return response.json(); // Parse response as JSON
+        } else {
+          return response.text(); // Handle non-JSON response (if any)
+        }
+      })
+      .then((result) => {
+        console.log("result", result);
+      })
+      .catch((error) => console.error("Error with fetch: ", error));
+  });
+};
