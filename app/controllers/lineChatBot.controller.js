@@ -259,8 +259,8 @@ exports.saveDataInfo = async (req, res) => {
     console.log("utm_source ", gtmData.utm_source);
     console.log("utm_medium ", gtmData.utm_medium);
     DataGTM.findOne(
-      // { convUserId: req.body.convUserId },
-      { ipAddess: req.body.ipAddess },
+      { convUserId: req.body.convUserId },
+      // { ipAddess: req.body.ipAddess },
       function (err, _dataGTM) {
         console.log("-------------_dataGTM-------------------------", _dataGTM);
 
