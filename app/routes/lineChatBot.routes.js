@@ -90,7 +90,7 @@ module.exports = (app) => {
   const redirectUri = process.env.redirectUri;
 
   app.get("/callback", async (req, res) => {
-    console.log("req.body ", req.body);
+    console.log("req ", req);
     const requestUrl = req.originalUrl;
 
     console.log("Request URL:", requestUrl);
