@@ -16,6 +16,7 @@ module.exports = (app) => {
 
   app.post("/lineUser", lineBot.lineUser);
   app.post("/lineTest", lineBot.lineUserTest);
+  app.post("/lineCheckDestination", lineBot.lineCheckDestination);
 
   // ---------------------------
   // API CHAT BOT

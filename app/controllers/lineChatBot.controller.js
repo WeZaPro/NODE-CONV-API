@@ -7,6 +7,8 @@ const liff = require("@line/liff");
 
 // API CHAT BOT
 const line = require("@line/bot-sdk");
+// check channel access token + channel Secret
+
 const config = {
   channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN,
   channelSecret: process.env.channelSecret,
@@ -329,35 +331,34 @@ exports.sendMessageFromWeb = async (req, res) => {
   }
 };
 
-exports.lineTest = async (req, res) => {
+exports.lineCheckDestination = async (req, res) => {
   console.log("req.body.events ", req.body.events[0]);
   console.log("req.body.destination ", req.body.destination);
   res.send({ message: "testLine" });
 };
 
 exports.lineUser = async (req, res) => {
+  // check destination
+  // init line token + secret channel
+  const AccessToken_BotA =
+    "tvb2bkJUvF5ZbSzAf9WDSmfwbwRDxI/2Nlw1TROa2XbaSAXdySiT1w4OvRQrTWPcZXSWvNn1cwlZtBkjly5fhhubxbIXzxZ5sAqnk0644k4l1ShKzP2MXJxZ50Wd1L0d1Yba6vX1JVDQYA/EBH2DbgdB04t89/1O/w1cDnyilFU=";
+  const channelSecret_BotA = "ed8d53f3b3d65b4f30a12af005f0a510";
+
+  const config_line = {
+    channelAccessToken: AccessToken_BotA,
+    channelSecret: channelSecret_BotA,
+  };
+  const client_line = new line.Client(config_line);
+
   // console.log("req.body ", req.body);
   console.log("req.body.destination ", req.body.destination);
   console.log("req.body.events ", req.body.events[0]);
   // console.log("req.body.destination ", req.body.destination);
   // console.log("userId ", req.body.events[0].source.userId);
   const lineUid = req.body.events[0].source.userId;
-  // get data from website ผ่าน gtm แล้ว save to mongo
-  // const gtmData = new DataGTM({
-  //   customerID: req.body.customerID,
-  //   convUserId: req.body.convUserId,
-  //   userAgent: req.body.userAgent,
-  //   ipAddess: req.body.ipAddess,
-  //   clientID: req.body.clientID,
-  //   utm_campaign: req.body.utm_campaign,
-  //   utm_source: req.body.utm_source,
-  //   utm_medium: req.body.utm_medium,
-  //   utm_term: req.body.utm_term,
-  //   gg_keyword: req.body.gg_keyword,
-  // });
-  // const filter = { lineUid: lineUid };
+
   const userId = req.body.events[0].source.userId;
-  const profile = await client.getProfile(userId);
+  const profile = await client_line.getProfile(userId);
 
   //ADD FRIEND
   const addNewFriend = {
@@ -401,7 +402,7 @@ exports.lineUser = async (req, res) => {
         messageBack = `${checkTextA} = interest case`;
         await fnAddConv(userId, interest);
         // ส่งข้อความตอบกลับผู้ใช้
-        return client.replyMessage(req.body.events[0].replyToken, {
+        return client_line.replyMessage(req.body.events[0].replyToken, {
           type: "text",
           text: `SEND CASE ${messageBack}! `,
         });
@@ -410,7 +411,7 @@ exports.lineUser = async (req, res) => {
         messageBack = `${checkTextB} = purchase case`;
         await fnAddConv(userId, purchase);
         // ส่งข้อความตอบกลับผู้ใช้
-        return client.replyMessage(req.body.events[0].replyToken, {
+        return client_line.replyMessage(req.body.events[0].replyToken, {
           type: "text",
           text: `SEND CASE ${messageBack}! `,
         });
@@ -432,7 +433,7 @@ exports.lineUser = async (req, res) => {
       await fnAddConv(userId, addNewFriend);
 
       // ส่งข้อความตอบกลับผู้ใช้
-      return client.replyMessage(req.body.events[0].replyToken, {
+      return client_line.replyMessage(req.body.events[0].replyToken, {
         type: "text",
         text: `Hello ${profile.displayName}! Your user ID is ${profile.userId}.`,
       });
