@@ -329,6 +329,11 @@ exports.sendMessageFromWeb = async (req, res) => {
   }
 };
 
+exports.testLine = async (req, res) => {
+  console.log("req.body.events ", req.body.events[0]);
+  res.send({ message: "testLine" });
+};
+
 exports.lineUser = async (req, res) => {
   console.log("req.body.events ", req.body.events[0]);
   // console.log("req.body.destination ", req.body.destination);
