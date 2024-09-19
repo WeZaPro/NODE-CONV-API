@@ -330,7 +330,7 @@ exports.sendMessageFromWeb = async (req, res) => {
 };
 
 exports.lineUser = async (req, res) => {
-  // console.log("req.body.events ", req.body.events[0]);
+  console.log("req.body.events ", req.body.events[0]);
   // console.log("req.body.destination ", req.body.destination);
   // console.log("userId ", req.body.events[0].source.userId);
   const lineUid = req.body.events[0].source.userId;
