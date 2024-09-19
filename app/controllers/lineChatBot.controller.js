@@ -261,8 +261,12 @@ exports.saveDataInfo = async (req, res) => {
     DataGTM.findOne(
       { convUserId: req.body.convUserId },
       function (err, _dataGTM) {
-        console.log("พบข้อมูล _dataGTM >>>>> ", _dataGTM);
-        if (!_dataGTM) {
+        console.log("---------------------------------------------");
+
+        if (_dataGTM) {
+          console.log("พบข้อมูล _dataGTM >>>>> ", _dataGTM);
+        } else {
+          console.log("ไม่พบข้อมูล _dataGTM  & SAVE >>>>> ", _dataGTM);
           gtmData.save().then((dataSave) => {
             // console.log("dataSave ", dataSave);
             // res.send({ message: "save data ok", sendData: dataSave });
@@ -270,13 +274,12 @@ exports.saveDataInfo = async (req, res) => {
               .status(200)
               .send({ message: "save data ok", sendData: dataSave });
           });
-        } else {
-          console.log("No Data _dataGTM >>>>> ", _dataGTM);
         }
       }
     );
   } else {
-    console.log("Don't Save db --------");
+    console.log("---------------------------------------------");
+    console.log("Don't Save db ขาดข้อมูล UTM --------");
     console.log("utm_source ", gtmData.utm_source);
     console.log("utm_medium ", gtmData.utm_medium);
   }
