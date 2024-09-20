@@ -617,85 +617,80 @@ const sendToGa4 = async function (userId, getEnv) {
   const api_secret = getEnv.secret_value; // Corrected 'api_secre' to 'api_secret'
   const measurement_id = getEnv.measurement_id;
 
+  console.log("userId >>>>>>> ", userId);
   const query = DataGTM.findOne({ lineBotUid: userId });
   console.log("findOne query>>>>>>>>>>>", query);
 
   // Find the document in the database
-  DataGTM.findOne({ lineBotUid: userId }, function (_dataGTM) {
-    console.log("findOne DataGTM>>>>>>>>>>>", _dataGTM);
-    // console.log("findOne err>>>>>>>>>>>", err);
+  // DataGTM.findOne({ lineBotUid: userId }, function (_dataGTM) {
+  //   console.log("findOne DataGTM>>>>>>>>>>>", _dataGTM);
 
-    // if (err) {
-    //   console.error("Error finding data: ", err);
-    //   return;
-    // }
+  //   if (!_dataGTM) {
+  //     console.log("not Nodata>>>>>>>", userId);
+  //     console.log("not _dataGTM>>>>>>>", _dataGTM);
+  //     return;
+  //   } else {
+  //     console.log("else Nodata>>>>>>>", userId);
+  //     console.log("else _dataGTM>>>>>>>", _dataGTM);
+  //   }
 
-    if (!_dataGTM) {
-      console.log("not Nodata>>>>>>>", userId);
-      console.log("not _dataGTM>>>>>>>", _dataGTM);
-      return;
-    } else {
-      console.log("else Nodata>>>>>>>", userId);
-      console.log("else _dataGTM>>>>>>>", _dataGTM);
-    }
+  //   const raw = JSON.stringify({
+  //     client_id: _dataGTM.clientID,
+  //     user_properties: { ipAddress: { value: _dataGTM.ipAddess } },
+  //     events: [
+  //       {
+  //         name: getEnv.event,
+  //         params: {
+  //           convUserId: _dataGTM.convUserId,
+  //           campaign: _dataGTM.utm_campaign,
+  //           source: _dataGTM.utm_source,
+  //           medium: _dataGTM.utm_medium,
+  //           term: _dataGTM.utm_term,
+  //           content: _dataGTM.gg_keyword,
+  //           session_id: _dataGTM.session_id,
+  //           // engagement_time_msec: "100",
+  //         },
+  //       },
+  //     ],
+  //   });
 
-    const raw = JSON.stringify({
-      client_id: _dataGTM.clientID,
-      user_properties: { ipAddress: { value: _dataGTM.ipAddess } },
-      events: [
-        {
-          name: getEnv.event,
-          params: {
-            convUserId: _dataGTM.convUserId,
-            campaign: _dataGTM.utm_campaign,
-            source: _dataGTM.utm_source,
-            medium: _dataGTM.utm_medium,
-            term: _dataGTM.utm_term,
-            content: _dataGTM.gg_keyword,
-            session_id: _dataGTM.session_id,
-            // engagement_time_msec: "100",
-          },
-        },
-      ],
-    });
+  //   console.log("raw>>>>>>> ", raw);
 
-    console.log("raw>>>>>>> ", raw);
+  //   const requestOptions = {
+  //     method: "POST",
+  //     headers: myHeaders,
+  //     body: raw,
+  //     redirect: "follow",
+  //   };
 
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
+  //   // console.log("findOne api_secret>>>>>>>>>>>", api_secret);
+  //   // console.log("findOne measurement_id>>>>>>>>>>>", measurement_id);
 
-    // console.log("findOne api_secret>>>>>>>>>>>", api_secret);
-    // console.log("findOne measurement_id>>>>>>>>>>>", measurement_id);
+  //   // Added '&' between the query parameters in the URL
+  //   fetch(
+  //     `https://www.google-analytics.com/mp/collect?measurement_id=${measurement_id}&api_secret=${api_secret}`,
+  //     // "https://www.google-analytics.com/mp/collect?measurement_id=G-BF1T8ZNXZQ&api_secret=Dpl6kV_3TC-FtqFKFQ9Plw",
+  //     requestOptions
+  //   )
+  //     .then((response) => {
+  //       if (!response.ok) {
+  //         // Handle error response
+  //         throw new Error(
+  //           `Network response was not ok: ${response.statusText}`
+  //         );
+  //       }
 
-    // Added '&' between the query parameters in the URL
-    fetch(
-      `https://www.google-analytics.com/mp/collect?measurement_id=${measurement_id}&api_secret=${api_secret}`,
-      // "https://www.google-analytics.com/mp/collect?measurement_id=G-BF1T8ZNXZQ&api_secret=Dpl6kV_3TC-FtqFKFQ9Plw",
-      requestOptions
-    )
-      .then((response) => {
-        if (!response.ok) {
-          // Handle error response
-          throw new Error(
-            `Network response was not ok: ${response.statusText}`
-          );
-        }
-
-        // Check if there's any content to parse
-        const contentType = response.headers.get("Content-Type");
-        if (contentType && contentType.includes("application/json")) {
-          return response.json(); // Parse response as JSON
-        } else {
-          return response.text(); // Handle non-JSON response (if any)
-        }
-      })
-      .then((result) => {
-        console.log("result", result);
-      })
-      .catch((error) => console.error("Error with fetch: ", error));
-  });
+  //       // Check if there's any content to parse
+  //       const contentType = response.headers.get("Content-Type");
+  //       if (contentType && contentType.includes("application/json")) {
+  //         return response.json(); // Parse response as JSON
+  //       } else {
+  //         return response.text(); // Handle non-JSON response (if any)
+  //       }
+  //     })
+  //     .then((result) => {
+  //       console.log("result", result);
+  //     })
+  //     .catch((error) => console.error("Error with fetch: ", error));
+  // });
 };
