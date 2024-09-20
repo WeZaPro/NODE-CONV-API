@@ -654,7 +654,7 @@ const sendToGa4 = async function (userId, getEnv) {
         redirect: "follow",
       };
 
-      fetch(
+      await fetch(
         `https://www.google-analytics.com/mp/collect?measurement_id=${measurement_id}&api_secret=${api_secret}`,
         // "https://www.google-analytics.com/mp/collect?measurement_id=G-BF1T8ZNXZQ&api_secret=Dpl6kV_3TC-FtqFKFQ9Plw",
         requestOptions
