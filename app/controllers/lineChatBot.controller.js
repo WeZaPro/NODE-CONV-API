@@ -501,12 +501,16 @@ exports.lineUser = async (req, res) => {
       const isInterest = getText.includes(checkTextA);
       const isPurchase = getText.includes(checkTextB);
 
+      console.log("isPurchase ", isPurchase);
+      console.log("isInterest ", isInterest);
+
       const START = "START";
       // console.log("isInterest ", isInterest);
 
       if (isInterest) {
         // console.log("interest case");
         messageBack = `${checkTextA} = interest case`;
+        console.log("interest ", interest);
         await fnAddConv(userId, interest);
         // ส่งข้อความตอบกลับผู้ใช้
         return client_line.replyMessage(req.body.events[0].replyToken, {
