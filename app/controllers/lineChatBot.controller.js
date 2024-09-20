@@ -528,7 +528,7 @@ exports.lineUser = async (req, res) => {
 
         try {
           DataGTM.findOne(
-            { botUid: req.body.events[0].source.userId },
+            { lineBotUid: req.body.events[0].source.userId },
             function (err, _userId) {
               console.log("_userId => ", _userId);
               if (_userId === null) {
