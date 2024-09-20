@@ -145,7 +145,7 @@ function setRegister(lineUserId) {
             //
             type: "uri",
             label: "YES",
-            uri: `${urlLiff}/?lineUserId=${lineUserId}`,
+            uri: `${urlLiff}/?botUserId=${lineUserId}`,
           },
           {
             type: "uri",
