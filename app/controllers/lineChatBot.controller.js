@@ -610,7 +610,7 @@ const sendToGa4 = async function (userId, getEnv) {
   console.log("getEnv ", getEnv);
 
   // Find the document in the database
-  DataGTM.findOne({ lineUid: userId }, function (err, _dataGTM) {
+  DataGTM.findOne({ lineBotUid: userId }, function (err, _dataGTM) {
     console.log("findOne DataGTM", _dataGTM);
 
     if (err) {
