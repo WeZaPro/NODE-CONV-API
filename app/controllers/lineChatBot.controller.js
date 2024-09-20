@@ -444,8 +444,8 @@ exports.lineUser = async (req, res) => {
       _addNewFriend_event = SiriBot_ga4_event_addNewFriend;
       _purchaseA_secret = SiriBot_ga4_secret_purchase;
       _purchaseA_event = SiriBot_ga4_event_purchase;
-      _interest_secret = SiriBot_ga4_event_interest;
-      _interest_event = SiriBot_ga4_secret_interest;
+      _interest_secret = SiriBot_ga4_secret_interest;
+      _interest_event = SiriBot_ga4_event_interest; //
       break;
   }
 
