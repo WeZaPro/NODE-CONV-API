@@ -662,6 +662,9 @@ const sendToGa4 = async function (userId, getEnv) {
     const api_secret = getEnv.secret_value; // Corrected 'api_secre' to 'api_secret'
     const measurement_id = getEnv.measurement_id;
 
+    console.log("findOne api_secret>>>>>>>>>>>", api_secret);
+    console.log("findOne measurement_id>>>>>>>>>>>", measurement_id);
+
     // Added '&' between the query parameters in the URL
     fetch(
       `https://www.google-analytics.com/mp/collect?measurement_id=${measurement_id}&api_secret=${api_secret}`,
