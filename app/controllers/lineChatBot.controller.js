@@ -24,58 +24,55 @@ exports.getChat = (req, res) => {
 };
 
 exports.chat = (req, res) => {
-  console.log("CHAT----->");
-  console.log("req.body.events----->", req.body.events);
-  try {
-    const lineChatBot = new LineBot({
-      userId: req.body.events[0].source.userId,
-      inputMessage: req.body.events[0].message.text,
-    });
-    //Todo -> find user id from db=> req.body.events[0].source.userId
-    //Todo -> yes -> next | no -> save to db
-
-    LineBot.findOne(
-      { userId: req.body.events[0].source.userId },
-      function (err, _userId) {
-        console.log("_userId => ", _userId);
-        console.log(
-          "req.body.events[0].message.text  => ",
-          req.body.events[0].message.text
-        );
-
-        //Todo รับข้อความจาก Liff -> เช็คว่าใช่คำว่า "START"
-        if (req.body.events[0].message.text === "START") {
-          //Todo save db
-          lineChatBot
-            .save()
-            .then((data) => {
-              console.log("save-> ", data);
-              res.send(data);
-            })
-            .catch((err) => {
-              res.status(500).send({
-                message:
-                  err.message ||
-                  "Some error occurred while creating the Tutorial.",
-              });
-            });
-        } else {
-          if (_userId === null) {
-            //Todo send message confirm save
-            confirmSaveDb(req, res, channelAccessToken);
-          } else {
-            console.log("req.body.events[0].--> ", req.body.events[0]);
-          }
-        }
-      }
-    );
-  } catch (err) {
-    console.log(err);
-  }
+  // console.log("CHAT----->");
+  // console.log("req.body.events----->", req.body.events);
+  // try {
+  //   const lineChatBot = new LineBot({
+  //     userId: req.body.events[0].source.userId,
+  //     inputMessage: req.body.events[0].message.text,
+  //   });
+  //   //Todo -> find user id from db=> req.body.events[0].source.userId
+  //   //Todo -> yes -> next | no -> save to db
+  //   LineBot.findOne(
+  //     { userId: req.body.events[0].source.userId },
+  //     function (err, _userId) {
+  //       console.log("_userId => ", _userId);
+  //       console.log(
+  //         "req.body.events[0].message.text  => ",
+  //         req.body.events[0].message.text
+  //       );
+  //       //Todo รับข้อความจาก Liff -> เช็คว่าใช่คำว่า "START"
+  //       if (req.body.events[0].message.text === "START") {
+  //         //Todo save db
+  //         lineChatBot
+  //           .save()
+  //           .then((data) => {
+  //             console.log("save-> ", data);
+  //             res.send(data);
+  //           })
+  //           .catch((err) => {
+  //             res.status(500).send({
+  //               message:
+  //                 err.message ||
+  //                 "Some error occurred while creating the Tutorial.",
+  //             });
+  //           });
+  //       } else {
+  //         if (_userId === null) {
+  //           //Todo send message confirm save
+  //           // confirmSaveDb(req, res, channelAccessToken);
+  //         } else {
+  //           console.log("req.body.events[0].--> ", req.body.events[0]);
+  //         }
+  //       }
+  //     }
+  //   );
+  // } catch (err) {
+  //   console.log(err);
+  // }
 };
 
 function confirmSaveDb(req, res, channelAccessToken) {
-  console.log("confirmSaveDb ", confirmSaveDb);
   try {
     const lineUserId = req.body.events[0].source.userId;
     if (req.body.events[0].message.type === "text") {
@@ -130,10 +127,7 @@ function confirmSaveDb(req, res, channelAccessToken) {
 
 function setRegister(lineUserId) {
   const testParam = lineUserId;
-  //https://liff.line.me/1656824759-KYL5BkQ6/
-  // const testParam = "Uad26c3928a8f42fb5eb677bf560bf07f";
-  //var urlLiff = `line://app/${process.env.liffApp}/path?botUserId=` + testParam; //ไปหน้า Liff App |แก้เป็น liff web a หน้าสำหรับ redirect
-  // var urlLiff = `https://liff.line.me/1656824759-j1N4MAYk`;
+
   var urlLiff = process.env.liffChat;
   console.log("urlLiff -> ", testParam);
   return [
@@ -147,17 +141,22 @@ function setRegister(lineUserId) {
           {
             // type: "message",
             // label: "YES",
-            // text: "START",
+            // text: lineUserId,
             //
             type: "uri",
             label: "YES",
-            uri: urlLiff,
+            uri: `${urlLiff}/?lineUserId=${lineUserId}`,
           },
           {
-            type: "message",
+            type: "uri",
             label: "NO",
-            text: "NO",
+            uri: `${urlLiff}/?lineUserId=${lineUserId}`,
           },
+          // {
+          //   type: "message",
+          //   label: "NO",
+          //   text: "NO",
+          // },
         ],
       },
     },
@@ -289,6 +288,7 @@ exports.saveDataInfo = async (req, res) => {
 };
 //
 
+//TODO HOLD *********
 exports.sendMessageFromWeb = async (req, res) => {
   console.log("req.body -> ", req.body);
   // console.log("req.body messages-> ", req.body.messages);
@@ -375,10 +375,8 @@ exports.updateLineBotId = async (req, res) => {
   }
 };
 
-//
-
 exports.lineUser = async (req, res) => {
-  console.log("Req >>>>>>>>>>>>>>> ", req);
+  // console.log("Req >>>>>>>>>>>>>>> ", req);
   // check destination
   const BotMarketing_Destination = "U07ab7da94695cca39e6333e9a7db7ba7";
   const AccessToken_BotMarketing =
@@ -456,8 +454,8 @@ exports.lineUser = async (req, res) => {
   const client_line = new line.Client(config_line);
 
   // console.log("req.body ", req.body);
-  console.log("req.body.destination ", req.body.destination);
-  console.log("req.body.events ", req.body.events[0]);
+  // console.log("req.body.destination ", req.body.destination);
+  // console.log("req.body.events ", req.body.events[0]);
   // console.log("req.body.destination ", req.body.destination);
   // console.log("userId ", req.body.events[0].source.userId);
   const lineUid = req.body.events[0].source.userId;
@@ -500,6 +498,8 @@ exports.lineUser = async (req, res) => {
       const checkTextB = "สั่งซื้อ";
       const isInterest = getText.includes(checkTextA);
       const isPurchase = getText.includes(checkTextB);
+
+      const START = "START";
       // console.log("isInterest ", isInterest);
 
       if (isInterest) {
@@ -520,9 +520,66 @@ exports.lineUser = async (req, res) => {
           type: "text",
           text: `SEND CASE ${messageBack}! `,
         });
+      } else if (START) {
+        // รับ TEXT จาก LIFF WEB
+        //Todo
+        // update bot User ID
+        messageBack = ` = update userid case`;
+
+        try {
+          //Todo -> find user id from db=> req.body.events[0].source.userId
+          //Todo -> yes -> next | no -> save to db
+
+          DataGTM.findOne(
+            { botUid: req.body.events[0].source.userId },
+            function (err, _userId) {
+              console.log("_userId => ", _userId);
+              if (_userId === null) {
+                //Todo send message confirm save
+                confirmSaveDb(req, res, config_line.channelAccessToken);
+                // กด yes บน reply จะส่ง botUid ไปกับ param และ find lineUid -> update botUid
+              } else {
+                console.log("req.body.events[0].--> ", req.body.events[0]);
+              }
+
+              // //Todo รับข้อความจาก Liff -> เช็คว่าใช่คำว่า "START"
+              // if (req.body.events[0].message.text === "START") {
+              //   // update line bot uid
+              //   //Todo save db Find Userid And Update Botuid
+              //   // lineBotUid
+              //   //   .save()
+              //   //   .then((data) => {
+              //   //     console.log("save-> ", data);
+              //   //     res.send(data);
+              //   //   })
+              //   //   .catch((err) => {
+              //   //     res.status(500).send({
+              //   //       message:
+              //   //         err.message ||
+              //   //         "Some error occurred while creating the Tutorial.",
+              //   //     });
+              //   //   });
+              // } else {
+              //   if (_userId === null) {
+              //     //Todo send message confirm save
+
+              //     // console.log(
+              //     //   "Update Line Bot Uid.--> ",
+              //     //   req.body.events[0].source.userId
+              //     // );
+              //     confirmSaveDb(req, res, config_line.channelAccessToken);
+              //   } else {
+              //     console.log("req.body.events[0].--> ", req.body.events[0]);
+              //   }
+              // }
+            }
+          );
+        } catch (err) {
+          console.log(err);
+        }
       } else {
-        // console.log("default case");
-        messageBack = "default case";
+        console.log("default case");
+        // messageBack = "default case";
         // ส่งข้อความตอบกลับผู้ใช้
         // return client.replyMessage(req.body.events[0].replyToken, {
         //   type: "text",
