@@ -360,7 +360,9 @@ exports.updateLineBotId = async (req, res) => {
   try {
     if (req.body.lineUid && req.body.lineBotUid) {
       const filter = { lineUid: req.body.lineUid };
-      const update = { lineBotUid: req.body.lineBotUid };
+      const update = {
+        lineBotUid: req.body.lineBotUid,
+      };
       // Use the options to return the updated document
       const addLineBotUid = await DataGTM.findOneAndUpdate(filter, update, {
         new: true,
@@ -544,15 +546,6 @@ exports.lineUser = async (req, res) => {
           console.log(err);
         }
       }
-      // } else {
-      //   console.log("default case");
-      //   // messageBack = "default case";
-      //   // ส่งข้อความตอบกลับผู้ใช้
-      //   // return client.replyMessage(req.body.events[0].replyToken, {
-      //   //   type: "text",
-      //   //   text: `SEND CASE ${messageBack}! `,
-      //   // });
-      // }
     } else if (req.body.events[0].type == "follow") {
       console.log("TYPE FOLLOW============> ");
       // const userId = req.body.events[0].source.userId;
@@ -591,7 +584,8 @@ const fnAddConv = async function (userId, getEnv) {
     }
 
     const filter = { lineUid: userId };
-
+    console.log("ADD CONVERSION TO DB filter==>> ", filter);
+    console.log("ADD CONVERSION TO DB update==>> ", update);
     // Use the options to return the updated document
     const addConv = await DataGTM.findOneAndUpdate(filter, update, {
       new: true,
