@@ -617,9 +617,73 @@ const sendToGa4 = async function (userId, getEnv) {
   const api_secret = getEnv.secret_value; // Corrected 'api_secre' to 'api_secret'
   const measurement_id = getEnv.measurement_id;
 
-  console.log("userId >>>>>>> ", userId);
-  const query = DataGTM.findOne({ lineBotUid: userId });
-  console.log("findOne query>>>>>>>>>>>", query);
+  // console.log("userId >>>>>>> ", userId);
+  // const query = DataGTM.findOne({ lineBotUid: userId });
+  // console.log("findOne query>>>>>>>>>>>", query);
+
+  try {
+    const query = await DataGTM.findOne({ lineBotUid: userId });
+    console.log("findOne query>>>>>>>>>>>", query); // จะแสดงค่าที่ค้นหาเจอ
+    if (query) {
+      const raw = JSON.stringify({
+        client_id: query.clientID,
+        user_properties: { ipAddress: { value: query.ipAddess } },
+        events: [
+          {
+            name: getEnv.event,
+            params: {
+              convUserId: query.convUserId,
+              campaign: query.utm_campaign,
+              source: query.utm_source,
+              medium: query.utm_medium,
+              term: query.utm_term,
+              content: query.gg_keyword,
+              session_id: query.session_id,
+              // engagement_time_msec: "100",
+            },
+          },
+        ],
+      });
+
+      console.log("raw>>>>>>> ", raw);
+
+      const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
+      };
+
+      fetch(
+        `https://www.google-analytics.com/mp/collect?measurement_id=${measurement_id}&api_secret=${api_secret}`,
+        // "https://www.google-analytics.com/mp/collect?measurement_id=G-BF1T8ZNXZQ&api_secret=Dpl6kV_3TC-FtqFKFQ9Plw",
+        requestOptions
+      )
+        .then((response) => {
+          console.log("response>>>>>>> ", response);
+          if (!response.ok) {
+            // Handle error response
+            throw new Error(
+              `Network response was not ok: ${response.statusText}`
+            );
+          }
+
+          // Check if there's any content to parse
+          const contentType = response.headers.get("Content-Type");
+          if (contentType && contentType.includes("application/json")) {
+            return response.json(); // Parse response as JSON
+          } else {
+            return response.text(); // Handle non-JSON response (if any)
+          }
+        })
+        .then((result) => {
+          console.log("result", result);
+        })
+        .catch((error) => console.error("Error with fetch: ", error));
+    }
+  } catch (err) {
+    console.error("Error in findOne:", err);
+  }
 
   // Find the document in the database
   // DataGTM.findOne({ lineBotUid: userId }, function (_dataGTM) {
@@ -634,63 +698,5 @@ const sendToGa4 = async function (userId, getEnv) {
   //     console.log("else _dataGTM>>>>>>>", _dataGTM);
   //   }
 
-  //   const raw = JSON.stringify({
-  //     client_id: _dataGTM.clientID,
-  //     user_properties: { ipAddress: { value: _dataGTM.ipAddess } },
-  //     events: [
-  //       {
-  //         name: getEnv.event,
-  //         params: {
-  //           convUserId: _dataGTM.convUserId,
-  //           campaign: _dataGTM.utm_campaign,
-  //           source: _dataGTM.utm_source,
-  //           medium: _dataGTM.utm_medium,
-  //           term: _dataGTM.utm_term,
-  //           content: _dataGTM.gg_keyword,
-  //           session_id: _dataGTM.session_id,
-  //           // engagement_time_msec: "100",
-  //         },
-  //       },
-  //     ],
-  //   });
-
-  //   console.log("raw>>>>>>> ", raw);
-
-  //   const requestOptions = {
-  //     method: "POST",
-  //     headers: myHeaders,
-  //     body: raw,
-  //     redirect: "follow",
-  //   };
-
-  //   // console.log("findOne api_secret>>>>>>>>>>>", api_secret);
-  //   // console.log("findOne measurement_id>>>>>>>>>>>", measurement_id);
-
-  //   // Added '&' between the query parameters in the URL
-  //   fetch(
-  //     `https://www.google-analytics.com/mp/collect?measurement_id=${measurement_id}&api_secret=${api_secret}`,
-  //     // "https://www.google-analytics.com/mp/collect?measurement_id=G-BF1T8ZNXZQ&api_secret=Dpl6kV_3TC-FtqFKFQ9Plw",
-  //     requestOptions
-  //   )
-  //     .then((response) => {
-  //       if (!response.ok) {
-  //         // Handle error response
-  //         throw new Error(
-  //           `Network response was not ok: ${response.statusText}`
-  //         );
-  //       }
-
-  //       // Check if there's any content to parse
-  //       const contentType = response.headers.get("Content-Type");
-  //       if (contentType && contentType.includes("application/json")) {
-  //         return response.json(); // Parse response as JSON
-  //       } else {
-  //         return response.text(); // Handle non-JSON response (if any)
-  //       }
-  //     })
-  //     .then((result) => {
-  //       console.log("result", result);
-  //     })
-  //     .catch((error) => console.error("Error with fetch: ", error));
   // });
 };
