@@ -575,6 +575,9 @@ exports.lineUser = async (req, res) => {
 
 const fnAddConv = async function (userId, getEnv) {
   console.log("getEnv ", getEnv);
+  console.log("getEnv secret_value ", getEnv.secret_value);
+  console.log("getEnv event ", getEnv.event);
+
   try {
     let update = "";
     if (getEnv.event == "addFriend") {
