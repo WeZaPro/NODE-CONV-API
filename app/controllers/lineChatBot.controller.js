@@ -617,6 +617,9 @@ const sendToGa4 = async function (userId, getEnv) {
   const api_secret = getEnv.secret_value; // Corrected 'api_secre' to 'api_secret'
   const measurement_id = getEnv.measurement_id;
 
+  const query = DataGTM.findOne({ lineBotUid: userId });
+  console.log("findOne query>>>>>>>>>>>", query);
+
   // Find the document in the database
   DataGTM.findOne({ lineBotUid: userId }, function (_dataGTM) {
     console.log("findOne DataGTM>>>>>>>>>>>", _dataGTM);
