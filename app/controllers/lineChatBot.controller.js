@@ -520,16 +520,13 @@ exports.lineUser = async (req, res) => {
           type: "text",
           text: `SEND CASE ${messageBack}! `,
         });
-      } else if (START) {
+      } else {
         // รับ TEXT จาก LIFF WEB
         //Todo
         // update bot User ID
         messageBack = ` = update userid case`;
 
         try {
-          //Todo -> find user id from db=> req.body.events[0].source.userId
-          //Todo -> yes -> next | no -> save to db
-
           DataGTM.findOne(
             { botUid: req.body.events[0].source.userId },
             function (err, _userId) {
@@ -541,51 +538,21 @@ exports.lineUser = async (req, res) => {
               } else {
                 console.log("req.body.events[0].--> ", req.body.events[0]);
               }
-
-              // //Todo รับข้อความจาก Liff -> เช็คว่าใช่คำว่า "START"
-              // if (req.body.events[0].message.text === "START") {
-              //   // update line bot uid
-              //   //Todo save db Find Userid And Update Botuid
-              //   // lineBotUid
-              //   //   .save()
-              //   //   .then((data) => {
-              //   //     console.log("save-> ", data);
-              //   //     res.send(data);
-              //   //   })
-              //   //   .catch((err) => {
-              //   //     res.status(500).send({
-              //   //       message:
-              //   //         err.message ||
-              //   //         "Some error occurred while creating the Tutorial.",
-              //   //     });
-              //   //   });
-              // } else {
-              //   if (_userId === null) {
-              //     //Todo send message confirm save
-
-              //     // console.log(
-              //     //   "Update Line Bot Uid.--> ",
-              //     //   req.body.events[0].source.userId
-              //     // );
-              //     confirmSaveDb(req, res, config_line.channelAccessToken);
-              //   } else {
-              //     console.log("req.body.events[0].--> ", req.body.events[0]);
-              //   }
-              // }
             }
           );
         } catch (err) {
           console.log(err);
         }
-      } else {
-        console.log("default case");
-        // messageBack = "default case";
-        // ส่งข้อความตอบกลับผู้ใช้
-        // return client.replyMessage(req.body.events[0].replyToken, {
-        //   type: "text",
-        //   text: `SEND CASE ${messageBack}! `,
-        // });
       }
+      // } else {
+      //   console.log("default case");
+      //   // messageBack = "default case";
+      //   // ส่งข้อความตอบกลับผู้ใช้
+      //   // return client.replyMessage(req.body.events[0].replyToken, {
+      //   //   type: "text",
+      //   //   text: `SEND CASE ${messageBack}! `,
+      //   // });
+      // }
     } else if (req.body.events[0].type == "follow") {
       console.log("TYPE FOLLOW============> ");
       // const userId = req.body.events[0].source.userId;
