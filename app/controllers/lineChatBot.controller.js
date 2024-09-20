@@ -354,6 +354,29 @@ exports.lineCheckDestination = async (req, res) => {
   res.send({ message: "testLine" });
 };
 
+exports.updateLineBotId = async (req, res) => {
+  console.log("req.body.lineUid ", req.body.lineUid);
+  console.log("req.body.lineBotUid ", req.body.lineBotUid);
+  try {
+    if (req.body.lineUid && req.body.lineBotUid) {
+      const filter = { lineUid: req.body.lineUid };
+      const update = { lineBotUid: req.body.lineBotUid };
+      // Use the options to return the updated document
+      const addLineBotUid = await DataGTM.findOneAndUpdate(filter, update, {
+        new: true,
+      });
+      console.log("addLineBotUid ", addLineBotUid);
+      res.send({ message: "updateLineBotId" });
+    } else {
+      res.send({ message: "no data request" });
+    }
+  } catch (err) {
+    console.log("err ", err);
+  }
+};
+
+//
+
 exports.lineUser = async (req, res) => {
   console.log("Req >>>>>>>>>>>>>>> ", req);
   // check destination

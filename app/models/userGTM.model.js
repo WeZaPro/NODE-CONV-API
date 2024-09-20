@@ -35,6 +35,10 @@ module.exports = (mongoose) => {
         type: String,
         default: "",
       },
+      lineBotUid: {
+        type: String,
+        default: "",
+      },
       addFriend: {
         type: String,
         default: "",
