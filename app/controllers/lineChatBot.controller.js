@@ -613,14 +613,14 @@ const sendToGa4 = async function (userId, getEnv) {
   console.log("getEnv measurement_id>>>>>> ", getEnv.measurement_id);
 
   // Find the document in the database
-  DataGTM.findOne({ lineBotUid: userId }, function (err, _dataGTM) {
+  DataGTM.findOne({ lineBotUid: userId }, function (_dataGTM) {
     console.log("findOne DataGTM>>>>>>>>>>>", _dataGTM);
-    console.log("findOne err>>>>>>>>>>>", err);
+    // console.log("findOne err>>>>>>>>>>>", err);
 
-    if (err) {
-      console.error("Error finding data: ", err);
-      return;
-    }
+    // if (err) {
+    //   console.error("Error finding data: ", err);
+    //   return;
+    // }
 
     if (!_dataGTM) {
       console.log("Nodata>>>>>>>", userId);
