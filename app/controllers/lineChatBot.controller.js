@@ -607,12 +607,14 @@ const fnAddConv = async function (userId, getEnv) {
 
 const sendToGa4 = async function (userId, getEnv) {
   console.log("sendToGa4 ");
-  console.log("userId ", userId);
-  console.log("getEnv ", getEnv);
+  console.log("userId >>>>>>> ", userId);
+  console.log("getEnv event>>>>>> ", getEnv.event);
+  console.log("getEnv secret_value>>>>>> ", getEnv.secret_value);
+  console.log("getEnv secret_value>>>>>> ", getEnv.measurement_id);
 
   // Find the document in the database
   DataGTM.findOne({ lineBotUid: userId }, function (err, _dataGTM) {
-    console.log("findOne DataGTM", _dataGTM);
+    console.log("findOne DataGTM>>>>>>>>>>>", _dataGTM);
 
     if (err) {
       console.error("Error finding data: ", err);
