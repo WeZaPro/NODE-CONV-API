@@ -660,7 +660,11 @@ const sendToGa4 = async function (userId, getEnv) {
         requestOptions
       )
         .then((response) => {
-          console.log("response>>>>>>> ", response);
+          console.log("response status>>>>>>> ", response.status);
+          console.log("response headers>>>>>>> ", response.headers);
+          response.text().then((text) => {
+            console.log("response body>>>>>>> ", text);
+          });
           if (!response.ok) {
             // Handle error response
             throw new Error(
