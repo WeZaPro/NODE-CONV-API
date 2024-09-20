@@ -580,11 +580,11 @@ const fnAddConv = async function (userId, getEnv) {
 
   try {
     let update = "";
-    if (getEnv.event == "addFriend") {
+    if (getEnv.event === "addFriend") {
       update = { addFriend: true };
-    } else if (getEnv.event == "interest") {
+    } else if (getEnv.event === "interest") {
       update = { eventA: true };
-    } else if (getEnv.event == "PurchaseA") {
+    } else if (getEnv.event === "PurchaseA") {
       update = { eventB: true };
     } else {
       update = { eventC: "na" };
