@@ -606,11 +606,16 @@ const fnAddConv = async function (userId, getEnv) {
 };
 
 const sendToGa4 = async function (userId, getEnv) {
-  console.log("sendToGa4 ");
-  console.log("userId >>>>>>> ", userId);
-  console.log("getEnv event>>>>>> ", getEnv.event);
-  console.log("getEnv secret_value>>>>>> ", getEnv.secret_value);
-  console.log("getEnv measurement_id>>>>>> ", getEnv.measurement_id);
+  // console.log("sendToGa4 ");
+  // console.log("userId >>>>>>> ", userId);
+  // console.log("getEnv event>>>>>> ", getEnv.event);
+  // console.log("getEnv secret_value>>>>>> ", getEnv.secret_value);
+  // console.log("getEnv measurement_id>>>>>> ", getEnv.measurement_id);
+
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  const api_secret = getEnv.secret_value; // Corrected 'api_secre' to 'api_secret'
+  const measurement_id = getEnv.measurement_id;
 
   // Find the document in the database
   DataGTM.findOne({ lineBotUid: userId }, function (_dataGTM) {
@@ -623,12 +628,13 @@ const sendToGa4 = async function (userId, getEnv) {
     // }
 
     if (!_dataGTM) {
-      console.log("Nodata>>>>>>>", userId);
+      console.log("not Nodata>>>>>>>", userId);
+      console.log("not _dataGTM>>>>>>>", _dataGTM);
       return;
+    } else {
+      console.log("else Nodata>>>>>>>", userId);
+      console.log("else _dataGTM>>>>>>>", _dataGTM);
     }
-
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
 
     const raw = JSON.stringify({
       client_id: _dataGTM.clientID,
@@ -659,11 +665,8 @@ const sendToGa4 = async function (userId, getEnv) {
       redirect: "follow",
     };
 
-    const api_secret = getEnv.secret_value; // Corrected 'api_secre' to 'api_secret'
-    const measurement_id = getEnv.measurement_id;
-
-    console.log("findOne api_secret>>>>>>>>>>>", api_secret);
-    console.log("findOne measurement_id>>>>>>>>>>>", measurement_id);
+    // console.log("findOne api_secret>>>>>>>>>>>", api_secret);
+    // console.log("findOne measurement_id>>>>>>>>>>>", measurement_id);
 
     // Added '&' between the query parameters in the URL
     fetch(

@@ -24,58 +24,55 @@ exports.getChat = (req, res) => {
 };
 
 exports.chat = (req, res) => {
-  console.log("CHAT----->");
-  console.log("req.body.events----->", req.body.events);
-  try {
-    const lineChatBot = new LineBot({
-      userId: req.body.events[0].source.userId,
-      inputMessage: req.body.events[0].message.text,
-    });
-    //Todo -> find user id from db=> req.body.events[0].source.userId
-    //Todo -> yes -> next | no -> save to db
-
-    LineBot.findOne(
-      { userId: req.body.events[0].source.userId },
-      function (err, _userId) {
-        console.log("_userId => ", _userId);
-        console.log(
-          "req.body.events[0].message.text  => ",
-          req.body.events[0].message.text
-        );
-
-        //Todo รับข้อความจาก Liff -> เช็คว่าใช่คำว่า "START"
-        if (req.body.events[0].message.text === "START") {
-          //Todo save db
-          lineChatBot
-            .save()
-            .then((data) => {
-              console.log("save-> ", data);
-              res.send(data);
-            })
-            .catch((err) => {
-              res.status(500).send({
-                message:
-                  err.message ||
-                  "Some error occurred while creating the Tutorial.",
-              });
-            });
-        } else {
-          if (_userId === null) {
-            //Todo send message confirm save
-            confirmSaveDb(req, res, channelAccessToken);
-          } else {
-            console.log("req.body.events[0].--> ", req.body.events[0]);
-          }
-        }
-      }
-    );
-  } catch (err) {
-    console.log(err);
-  }
+  // console.log("CHAT----->");
+  // console.log("req.body.events----->", req.body.events);
+  // try {
+  //   const lineChatBot = new LineBot({
+  //     userId: req.body.events[0].source.userId,
+  //     inputMessage: req.body.events[0].message.text,
+  //   });
+  //   //Todo -> find user id from db=> req.body.events[0].source.userId
+  //   //Todo -> yes -> next | no -> save to db
+  //   LineBot.findOne(
+  //     { userId: req.body.events[0].source.userId },
+  //     function (err, _userId) {
+  //       console.log("_userId => ", _userId);
+  //       console.log(
+  //         "req.body.events[0].message.text  => ",
+  //         req.body.events[0].message.text
+  //       );
+  //       //Todo รับข้อความจาก Liff -> เช็คว่าใช่คำว่า "START"
+  //       if (req.body.events[0].message.text === "START") {
+  //         //Todo save db
+  //         lineChatBot
+  //           .save()
+  //           .then((data) => {
+  //             console.log("save-> ", data);
+  //             res.send(data);
+  //           })
+  //           .catch((err) => {
+  //             res.status(500).send({
+  //               message:
+  //                 err.message ||
+  //                 "Some error occurred while creating the Tutorial.",
+  //             });
+  //           });
+  //       } else {
+  //         if (_userId === null) {
+  //           //Todo send message confirm save
+  //           // confirmSaveDb(req, res, channelAccessToken);
+  //         } else {
+  //           console.log("req.body.events[0].--> ", req.body.events[0]);
+  //         }
+  //       }
+  //     }
+  //   );
+  // } catch (err) {
+  //   console.log(err);
+  // }
 };
 
 function confirmSaveDb(req, res, channelAccessToken) {
-  console.log("confirmSaveDb ", confirmSaveDb);
   try {
     const lineUserId = req.body.events[0].source.userId;
     if (req.body.events[0].message.type === "text") {
@@ -130,10 +127,7 @@ function confirmSaveDb(req, res, channelAccessToken) {
 
 function setRegister(lineUserId) {
   const testParam = lineUserId;
-  //https://liff.line.me/1656824759-KYL5BkQ6/
-  // const testParam = "Uad26c3928a8f42fb5eb677bf560bf07f";
-  //var urlLiff = `line://app/${process.env.liffApp}/path?botUserId=` + testParam; //ไปหน้า Liff App |แก้เป็น liff web a หน้าสำหรับ redirect
-  // var urlLiff = `https://liff.line.me/1656824759-j1N4MAYk`;
+
   var urlLiff = process.env.liffChat;
   console.log("urlLiff -> ", testParam);
   return [
@@ -147,17 +141,22 @@ function setRegister(lineUserId) {
           {
             // type: "message",
             // label: "YES",
-            // text: "START",
+            // text: lineUserId,
             //
             type: "uri",
             label: "YES",
-            uri: urlLiff,
+            uri: `${urlLiff}/?botUserId=${lineUserId}`,
           },
           {
-            type: "message",
+            type: "uri",
             label: "NO",
-            text: "NO",
+            uri: `${urlLiff}/?lineUserId=${lineUserId}`,
           },
+          // {
+          //   type: "message",
+          //   label: "NO",
+          //   text: "NO",
+          // },
         ],
       },
     },
@@ -289,8 +288,23 @@ exports.saveDataInfo = async (req, res) => {
 };
 //
 
+//TODO HOLD *********
 exports.sendMessageFromWeb = async (req, res) => {
   console.log("req.body -> ", req.body);
+  // console.log("req.body messages-> ", req.body.messages);
+  // console.log("req.body.messages[1].text-> ", req.body.messages[1].text);
+
+  const sendLine = {
+    to: "Ue7435fca0163b1e68944d0f3eb3589ae",
+
+    messages: [
+      {
+        type: "text",
+
+        text: "Hello from Vue.js! | user id : U634375582d774e1c8ce69c31f6f1ba48",
+      },
+    ],
+  };
 
   // ตรวจสอบว่ามี 'to' และ 'messages' หรือไม่
   if (!req.body.to || !req.body.messages) {
@@ -300,7 +314,9 @@ exports.sendMessageFromWeb = async (req, res) => {
   }
 
   const messagingApiUrl = "https://api.line.me/v2/bot/message/push";
-  const messagingAccessToken = process.env.LINE_CHANNEL_ACCESS_TOKEN;
+  // const messagingAccessToken = process.env.LINE_CHANNEL_ACCESS_TOKEN;
+  const messagingAccessToken =
+    "XMJ7WeHHv/jhWWGEeDqV3PxO7fuxAtRumykv5/hm4ZqD+dQac2XtZiQySQavmI38CcwkeucAeTgiVRg1nyv6bE95TkrNDURLRYqM1PjmgfkZ7EQHWiBT5/sIAhIs7iyr6FAKSBvTEX3bfmKVVKGB4gdB04t89/1O/w1cDnyilFU=";
   // const messagingAccessToken =
   //   "tvb2bkJUvF5ZbSzAf9WDSmfwbwRDxI/2Nlw1TROa2XbaSAXdySiT1w4OvRQrTWPcZXSWvNn1cwlZtBkjly5fhhubxbIXzxZ5sAqnk0644k4l1ShKzP2MXJxZ50Wd1L0d1Yba6vX1JVDQYA/EBH2DbgdB04t89/1O/w1cDnyilFU=";
 
@@ -311,7 +327,8 @@ exports.sendMessageFromWeb = async (req, res) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${messagingAccessToken}`,
       },
-      body: JSON.stringify(req.body),
+      // body: JSON.stringify(req.body),
+      body: JSON.stringify(sendLine),
     });
 
     const responseData = await response.json();
@@ -337,7 +354,31 @@ exports.lineCheckDestination = async (req, res) => {
   res.send({ message: "testLine" });
 };
 
+exports.updateLineBotId = async (req, res) => {
+  console.log("req.body.lineUid ", req.body.lineUid);
+  console.log("req.body.lineBotUid ", req.body.lineBotUid);
+  try {
+    if (req.body.lineUid && req.body.lineBotUid) {
+      const filter = { lineUid: req.body.lineUid };
+      const update = {
+        lineBotUid: req.body.lineBotUid,
+      };
+      // Use the options to return the updated document
+      const addLineBotUid = await DataGTM.findOneAndUpdate(filter, update, {
+        new: true,
+      });
+      console.log("addLineBotUid ", addLineBotUid);
+      res.send({ message: "updateLineBotId" });
+    } else {
+      res.send({ message: "no data request" });
+    }
+  } catch (err) {
+    console.log("err ", err);
+  }
+};
+
 exports.lineUser = async (req, res) => {
+  // console.log("Req >>>>>>>>>>>>>>> ", req);
   // check destination
   const BotMarketing_Destination = "U07ab7da94695cca39e6333e9a7db7ba7";
   const AccessToken_BotMarketing =
@@ -358,16 +399,16 @@ exports.lineUser = async (req, res) => {
   const AccessToken_SiriBot =
     "XMJ7WeHHv/jhWWGEeDqV3PxO7fuxAtRumykv5/hm4ZqD+dQac2XtZiQySQavmI38CcwkeucAeTgiVRg1nyv6bE95TkrNDURLRYqM1PjmgfkZ7EQHWiBT5/sIAhIs7iyr6FAKSBvTEX3bfmKVVKGB4gdB04t89/1O/w1cDnyilFU=";
   const channelSecret_SiriBot = "894bf30e64cb28fff808ce93ffb19230";
-  const SiriBot_ga4_id = "";
+  const SiriBot_ga4_id = "G-041ZG8ZZ50";
   //
-  const SiriBot_ga4_event_addNewFriend = "";
-  const SiriBot_ga4_secret_addNewFriend = "";
+  const SiriBot_ga4_event_addNewFriend = "addFriend";
+  const SiriBot_ga4_secret_addNewFriend = "ERh5RV41TVOQORPAFcJaKw";
   //
-  const SiriBot_ga4_event_purchase = "";
-  const SiriBot_ga4_secret_purchase = "";
+  const SiriBot_ga4_event_purchase = "PurchaseA";
+  const SiriBot_ga4_secret_purchase = "FVxfTVDPSFuV78wK3Fv4fQ";
   //
-  const SiriBot_ga4_event_interest = "";
-  const SiriBot_ga4_secret_interest = "";
+  const SiriBot_ga4_event_interest = "interest";
+  const SiriBot_ga4_secret_interest = "eF_AC5SeRxi2BwCBZok5Yw";
   //-------------------------------------------------------------------------------
 
   let channel_access_token = "";
@@ -403,8 +444,8 @@ exports.lineUser = async (req, res) => {
       _addNewFriend_event = SiriBot_ga4_event_addNewFriend;
       _purchaseA_secret = SiriBot_ga4_secret_purchase;
       _purchaseA_event = SiriBot_ga4_event_purchase;
-      _interest_secret = SiriBot_ga4_event_interest;
-      _interest_event = SiriBot_ga4_secret_interest;
+      _interest_secret = SiriBot_ga4_secret_interest;
+      _interest_event = SiriBot_ga4_event_interest; //
       break;
   }
 
@@ -415,8 +456,8 @@ exports.lineUser = async (req, res) => {
   const client_line = new line.Client(config_line);
 
   // console.log("req.body ", req.body);
-  console.log("req.body.destination ", req.body.destination);
-  console.log("req.body.events ", req.body.events[0]);
+  // console.log("req.body.destination ", req.body.destination);
+  // console.log("req.body.events ", req.body.events[0]);
   // console.log("req.body.destination ", req.body.destination);
   // console.log("userId ", req.body.events[0].source.userId);
   const lineUid = req.body.events[0].source.userId;
@@ -426,21 +467,21 @@ exports.lineUser = async (req, res) => {
 
   //ADD FRIEND
   const addNewFriend = {
-    measurement_id: "G-BF1T8ZNXZQ",
-    secret_value: "C2sGHFZaRF6MA0KQ_igkiA",
-    event: "addFriend",
+    measurement_id: _ga4_id,
+    secret_value: _addNewFriend_secret,
+    event: _addNewFriend_event,
   };
 
   const purchase = {
-    measurement_id: "G-BF1T8ZNXZQ",
-    secret_value: "NMsz4YtcS0SlSoFV-jK-uQ",
-    event: "PurchaseA",
+    measurement_id: _ga4_id,
+    secret_value: _purchaseA_secret,
+    event: _purchaseA_event,
   };
 
   const interest = {
-    measurement_id: "G-BF1T8ZNXZQ",
-    secret_value: "_UBms8ItRX2nl49klAVNVw",
-    event: "interest",
+    measurement_id: _ga4_id,
+    secret_value: _interest_secret,
+    event: _interest_event,
   };
 
   try {
@@ -459,11 +500,17 @@ exports.lineUser = async (req, res) => {
       const checkTextB = "สั่งซื้อ";
       const isInterest = getText.includes(checkTextA);
       const isPurchase = getText.includes(checkTextB);
+
+      console.log("isPurchase ", isPurchase);
+      console.log("isInterest ", isInterest);
+
+      const START = "START";
       // console.log("isInterest ", isInterest);
 
       if (isInterest) {
         // console.log("interest case");
         messageBack = `${checkTextA} = interest case`;
+        console.log("interest ", interest);
         await fnAddConv(userId, interest);
         // ส่งข้อความตอบกลับผู้ใช้
         return client_line.replyMessage(req.body.events[0].replyToken, {
@@ -480,13 +527,28 @@ exports.lineUser = async (req, res) => {
           text: `SEND CASE ${messageBack}! `,
         });
       } else {
-        // console.log("default case");
-        messageBack = "default case";
-        // ส่งข้อความตอบกลับผู้ใช้
-        // return client.replyMessage(req.body.events[0].replyToken, {
-        //   type: "text",
-        //   text: `SEND CASE ${messageBack}! `,
-        // });
+        // รับ TEXT จาก LIFF WEB
+        //Todo
+        // update bot User ID
+        messageBack = ` = update userid case`;
+
+        try {
+          DataGTM.findOne(
+            { lineBotUid: req.body.events[0].source.userId },
+            function (err, _userId) {
+              console.log("_userId => ", _userId);
+              if (_userId === null) {
+                //Todo send message confirm save
+                confirmSaveDb(req, res, config_line.channelAccessToken);
+                // กด yes บน reply จะส่ง botUid ไปกับ param และ find lineUid -> update botUid
+              } else {
+                console.log("req.body.events[0].--> ", req.body.events[0]);
+              }
+            }
+          );
+        } catch (err) {
+          console.log(err);
+        }
       }
     } else if (req.body.events[0].type == "follow") {
       console.log("TYPE FOLLOW============> ");
@@ -513,20 +575,24 @@ exports.lineUser = async (req, res) => {
 
 const fnAddConv = async function (userId, getEnv) {
   console.log("getEnv ", getEnv);
+  console.log("getEnv secret_value ", getEnv.secret_value);
+  console.log("getEnv event ", getEnv.event);
+
   try {
     let update = "";
-    if (getEnv.event == "addFriend") {
+    if (getEnv.event === "addFriend") {
       update = { addFriend: true };
-    } else if (getEnv.event == "interest") {
+    } else if (getEnv.event === "interest") {
       update = { eventA: true };
-    } else if (getEnv.event == "PurchaseA") {
+    } else if (getEnv.event === "PurchaseA") {
       update = { eventB: true };
     } else {
       update = { eventC: "na" };
     }
 
-    const filter = { lineUid: userId };
-
+    const filter = { lineBotUid: userId };
+    console.log("ADD CONVERSION TO DB filter==>> ", filter);
+    console.log("ADD CONVERSION TO DB update==>> ", update);
     // Use the options to return the updated document
     const addConv = await DataGTM.findOneAndUpdate(filter, update, {
       new: true,
@@ -540,17 +606,24 @@ const fnAddConv = async function (userId, getEnv) {
 };
 
 const sendToGa4 = async function (userId, getEnv) {
-  console.log("sendToGa4 ", userId);
+  console.log("sendToGa4 ");
+  console.log("userId >>>>>>> ", userId);
+  console.log("getEnv event>>>>>> ", getEnv.event);
+  console.log("getEnv secret_value>>>>>> ", getEnv.secret_value);
+  console.log("getEnv measurement_id>>>>>> ", getEnv.measurement_id);
 
   // Find the document in the database
-  DataGTM.findOne({ lineUid: userId }, function (err, _dataGTM) {
-    if (err) {
-      console.error("Error finding data: ", err);
-      return;
-    }
+  DataGTM.findOne({ lineBotUid: userId }, function (_dataGTM) {
+    console.log("findOne DataGTM>>>>>>>>>>>", _dataGTM);
+    // console.log("findOne err>>>>>>>>>>>", err);
+
+    // if (err) {
+    //   console.error("Error finding data: ", err);
+    //   return;
+    // }
 
     if (!_dataGTM) {
-      console.log("No data found for user: ", userId);
+      console.log("Nodata>>>>>>>", userId);
       return;
     }
 
@@ -577,6 +650,8 @@ const sendToGa4 = async function (userId, getEnv) {
       ],
     });
 
+    console.log("raw>>>>>>> ", raw);
+
     const requestOptions = {
       method: "POST",
       headers: myHeaders,
@@ -586,6 +661,9 @@ const sendToGa4 = async function (userId, getEnv) {
 
     const api_secret = getEnv.secret_value; // Corrected 'api_secre' to 'api_secret'
     const measurement_id = getEnv.measurement_id;
+
+    console.log("findOne api_secret>>>>>>>>>>>", api_secret);
+    console.log("findOne measurement_id>>>>>>>>>>>", measurement_id);
 
     // Added '&' between the query parameters in the URL
     fetch(
