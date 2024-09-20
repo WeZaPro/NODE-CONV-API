@@ -583,7 +583,7 @@ const fnAddConv = async function (userId, getEnv) {
       update = { eventC: "na" };
     }
 
-    const filter = { lineUid: userId };
+    const filter = { lineBotUid: userId };
     console.log("ADD CONVERSION TO DB filter==>> ", filter);
     console.log("ADD CONVERSION TO DB update==>> ", update);
     // Use the options to return the updated document
