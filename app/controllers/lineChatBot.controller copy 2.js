@@ -4,7 +4,6 @@ const LineBot = db.getMessage;
 const DataGTM = db.userGtms;
 require("dotenv").config();
 const liff = require("@line/liff");
-const axios = require("axios");
 
 // API CHAT BOT
 const line = require("@line/bot-sdk");
@@ -622,80 +621,11 @@ const sendToGa4 = async function (userId, getEnv) {
   // const query = DataGTM.findOne({ lineBotUid: userId });
   // console.log("findOne query>>>>>>>>>>>", query);
 
-  // try {
-  //   const query = await DataGTM.findOne({ lineBotUid: userId });
-  //   console.log("findOne query>>>>>>>>>>>", query); // จะแสดงค่าที่ค้นหาเจอ
-  //   if (query) {
-  //     const raw = JSON.stringify({
-  //       client_id: query.clientID,
-  //       user_properties: { ipAddress: { value: query.ipAddess } },
-  //       events: [
-  //         {
-  //           name: getEnv.event,
-  //           params: {
-  //             convUserId: query.convUserId,
-  //             campaign: query.utm_campaign,
-  //             source: query.utm_source,
-  //             medium: query.utm_medium,
-  //             term: query.utm_term,
-  //             content: query.gg_keyword,
-  //             session_id: query.session_id,
-  //             // engagement_time_msec: "100",
-  //           },
-  //         },
-  //       ],
-  //     });
-
-  //     console.log("raw>>>>>>> ", raw);
-
-  //     const requestOptions = {
-  //       method: "POST",
-  //       headers: myHeaders,
-  //       body: raw,
-  //       redirect: "follow",
-  //     };
-
-  //     await fetch(
-  //       `https://www.google-analytics.com/mp/collect?measurement_id=${measurement_id}&api_secret=${api_secret}`,
-  //       // "https://www.google-analytics.com/mp/collect?measurement_id=G-BF1T8ZNXZQ&api_secret=Dpl6kV_3TC-FtqFKFQ9Plw",
-  //       requestOptions
-  //     )
-  //       .then((response) => {
-  //         console.log("response status>>>>>>> ", response.status);
-  //         console.log("response headers>>>>>>> ", response.headers);
-  //         response.text().then((text) => {
-  //           console.log("response body>>>>>>> ", text);
-  //         });
-  //         if (!response.ok) {
-  //           // Handle error response
-  //           throw new Error(
-  //             `Network response was not ok: ${response.statusText}`
-  //           );
-  //         }
-
-  //         // Check if there's any content to parse
-  //         const contentType = response.headers.get("Content-Type");
-  //         if (contentType && contentType.includes("application/json")) {
-  //           return response.json(); // Parse response as JSON
-  //         } else {
-  //           return response.text(); // Handle non-JSON response (if any)
-  //         }
-  //       })
-  //       .then((result) => {
-  //         console.log("result", result);
-  //       })
-  //       .catch((error) => console.error("Error with fetch: ", error));
-  //   }
-  // } catch (err) {
-  //   console.error("Error in findOne:", err);
-  // }
-
   try {
     const query = await DataGTM.findOne({ lineBotUid: userId });
     console.log("findOne query>>>>>>>>>>>", query); // จะแสดงค่าที่ค้นหาเจอ
-
     if (query) {
-      const raw = {
+      const raw = JSON.stringify({
         client_id: query.clientID,
         user_properties: { ipAddress: { value: query.ipAddess } },
         events: [
@@ -713,24 +643,50 @@ const sendToGa4 = async function (userId, getEnv) {
             },
           },
         ],
+      });
+
+      console.log("raw>>>>>>> ", raw);
+
+      const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
       };
 
-      console.log("raw>>>>>>> ", JSON.stringify(raw));
-
-      const response = await axios.post(
+      await fetch(
         `https://www.google-analytics.com/mp/collect?measurement_id=${measurement_id}&api_secret=${api_secret}`,
-        raw,
-        {
-          headers: myHeaders,
-        }
-      );
+        // "https://www.google-analytics.com/mp/collect?measurement_id=G-BF1T8ZNXZQ&api_secret=Dpl6kV_3TC-FtqFKFQ9Plw",
+        requestOptions
+      )
+        .then((response) => {
+          console.log("response status>>>>>>> ", response.status);
+          console.log("response headers>>>>>>> ", response.headers);
+          response.text().then((text) => {
+            console.log("response body>>>>>>> ", text);
+          });
+          if (!response.ok) {
+            // Handle error response
+            throw new Error(
+              `Network response was not ok: ${response.statusText}`
+            );
+          }
 
-      console.log("response status>>>>>>> ", response.status);
-      console.log("response headers>>>>>>> ", response.headers);
-      console.log("response data>>>>>>> ", response.data);
+          // Check if there's any content to parse
+          const contentType = response.headers.get("Content-Type");
+          if (contentType && contentType.includes("application/json")) {
+            return response.json(); // Parse response as JSON
+          } else {
+            return response.text(); // Handle non-JSON response (if any)
+          }
+        })
+        .then((result) => {
+          console.log("result", result);
+        })
+        .catch((error) => console.error("Error with fetch: ", error));
     }
-  } catch (error) {
-    console.error("Error with axios: ", error);
+  } catch (err) {
+    console.error("Error in findOne:", err);
   }
 
   // Find the document in the database
