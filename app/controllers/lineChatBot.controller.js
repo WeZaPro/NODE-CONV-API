@@ -610,11 +610,12 @@ const sendToGa4 = async function (userId, getEnv) {
   console.log("userId >>>>>>> ", userId);
   console.log("getEnv event>>>>>> ", getEnv.event);
   console.log("getEnv secret_value>>>>>> ", getEnv.secret_value);
-  console.log("getEnv secret_value>>>>>> ", getEnv.measurement_id);
+  console.log("getEnv measurement_id>>>>>> ", getEnv.measurement_id);
 
   // Find the document in the database
   DataGTM.findOne({ lineBotUid: userId }, function (err, _dataGTM) {
     console.log("findOne DataGTM>>>>>>>>>>>", _dataGTM);
+    console.log("findOne err>>>>>>>>>>>", err);
 
     if (err) {
       console.error("Error finding data: ", err);
@@ -622,7 +623,7 @@ const sendToGa4 = async function (userId, getEnv) {
     }
 
     if (!_dataGTM) {
-      console.log("No data found for user: ", userId);
+      console.log("Nodata>>>>>>>", userId);
       return;
     }
 
@@ -649,7 +650,7 @@ const sendToGa4 = async function (userId, getEnv) {
       ],
     });
 
-    console.log("raw data to GA4 >>>>>>> ", raw);
+    console.log("raw>>>>>>> ", raw);
 
     const requestOptions = {
       method: "POST",
