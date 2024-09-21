@@ -78,7 +78,7 @@ exports.searchCusId = (req, res) => {
   const _line_user_id = req.body.line_user_id;
   console.log("find _line_user_id data ", _line_user_id);
   try {
-    Customer.findOne({ line_user_id: _line_user_id })
+    Customer.findOne({ lineUid: _line_user_id })
       .then((data) => {
         if (!data)
           res
