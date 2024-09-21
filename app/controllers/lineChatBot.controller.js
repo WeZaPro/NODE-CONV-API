@@ -17,61 +17,7 @@ const config = {
 const client = new line.Client(config);
 
 // let channelAccessToken = process.env.LINE_CHANNEL_ACCESS_TOKEN;
-let channelAccessToken = process.env.LINE_CHANNEL_ACCESS_TOKEN;
-
-exports.getChat = (req, res) => {
-  console.log("GET CHAT----->");
-  res.status(200).send({ message: "Send from chat bot" });
-};
-
-exports.chat = (req, res) => {
-  // console.log("CHAT----->");
-  // console.log("req.body.events----->", req.body.events);
-  // try {
-  //   const lineChatBot = new LineBot({
-  //     userId: req.body.events[0].source.userId,
-  //     inputMessage: req.body.events[0].message.text,
-  //   });
-  //   //Todo -> find user id from db=> req.body.events[0].source.userId
-  //   //Todo -> yes -> next | no -> save to db
-  //   LineBot.findOne(
-  //     { userId: req.body.events[0].source.userId },
-  //     function (err, _userId) {
-  //       console.log("_userId => ", _userId);
-  //       console.log(
-  //         "req.body.events[0].message.text  => ",
-  //         req.body.events[0].message.text
-  //       );
-  //       //Todo รับข้อความจาก Liff -> เช็คว่าใช่คำว่า "START"
-  //       if (req.body.events[0].message.text === "START") {
-  //         //Todo save db
-  //         lineChatBot
-  //           .save()
-  //           .then((data) => {
-  //             console.log("save-> ", data);
-  //             res.send(data);
-  //           })
-  //           .catch((err) => {
-  //             res.status(500).send({
-  //               message:
-  //                 err.message ||
-  //                 "Some error occurred while creating the Tutorial.",
-  //             });
-  //           });
-  //       } else {
-  //         if (_userId === null) {
-  //           //Todo send message confirm save
-  //           // confirmSaveDb(req, res, channelAccessToken);
-  //         } else {
-  //           console.log("req.body.events[0].--> ", req.body.events[0]);
-  //         }
-  //       }
-  //     }
-  //   );
-  // } catch (err) {
-  //   console.log(err);
-  // }
-};
+// let channelAccessToken = process.env.LINE_CHANNEL_ACCESS_TOKEN;
 
 function confirmSaveDb(req, res, channelAccessToken) {
   try {
@@ -164,67 +110,6 @@ function setRegister(lineUserId) {
   ];
 }
 
-function sendMessage(req, res, channelAccessToken) {
-  if (req.body.events[0].message.type === "text") {
-    // not stricker
-
-    const dataString = JSON.stringify({
-      replyToken: req.body.events[0].replyToken,
-      //   messages: samplePayload(),
-
-      messages: [
-        {
-          type: "text",
-          text: responseMessage(req.body.events[0].message.text),
-        },
-        {
-          type: "sticker",
-          packageId: "446",
-          stickerId: "1988",
-        },
-      ],
-
-      //   ],
-    });
-
-    const headers = {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + channelAccessToken,
-    };
-
-    const webhookOptions = {
-      hostname: "api.line.me",
-      path: "/v2/bot/message/reply",
-      method: "POST",
-      headers: headers,
-      body: dataString,
-    };
-
-    const request = https.request(webhookOptions, (res) => {
-      res.on("data", (d) => {
-        process.stdout.write(d);
-      });
-    });
-
-    request.on("error", (err) => {
-      console.error(err);
-    });
-
-    request.write(dataString);
-    request.end();
-
-    //=====> end
-  } else {
-    console.log("message type = !text");
-    res.status(200).send({
-      message: "message type = !text",
-    });
-  }
-}
-
-function responseMessage(inputMsg) {
-  return inputMsg;
-}
 exports.saveDataInfo = async (req, res) => {
   // get data from website ผ่าน gtm แล้ว save to mongo
   const gtmData = new DataGTM({
@@ -241,19 +126,6 @@ exports.saveDataInfo = async (req, res) => {
     session_id: req.body.session_id,
   });
 
-  // DataGTM.findOne(
-  //   { convUserId: req.body.convUserId },
-  //   function (err, _dataGTM) {
-  //     // console.log("_dataGTM ", _dataGTM);
-  //     if (!_dataGTM) {
-  //       gtmData.save().then((dataSave) => {
-  //         // console.log("dataSave ", dataSave);
-  //         // res.send({ message: "save data ok", sendData: dataSave });
-  //         res.status(200).send({ message: "save data ok", sendData: dataSave });
-  //       });
-  //     }
-  //   }
-  // );
   console.log("-------------IPADDRESS----------------", req.body.ipAddess);
   console.log("gtmData --------", gtmData);
   if (gtmData.utm_source && gtmData.utm_medium) {
@@ -288,66 +160,6 @@ exports.saveDataInfo = async (req, res) => {
   }
 };
 //
-
-//TODO HOLD *********
-exports.sendMessageFromWeb = async (req, res) => {
-  console.log("req.body -> ", req.body);
-  // console.log("req.body messages-> ", req.body.messages);
-  // console.log("req.body.messages[1].text-> ", req.body.messages[1].text);
-
-  const sendLine = {
-    to: "Ue7435fca0163b1e68944d0f3eb3589ae",
-
-    messages: [
-      {
-        type: "text",
-
-        text: "Hello from Vue.js! | user id : U634375582d774e1c8ce69c31f6f1ba48",
-      },
-    ],
-  };
-
-  // ตรวจสอบว่ามี 'to' และ 'messages' หรือไม่
-  if (!req.body.to || !req.body.messages) {
-    return res
-      .status(400)
-      .json({ message: "'to' and 'messages' fields are required" });
-  }
-
-  const messagingApiUrl = "https://api.line.me/v2/bot/message/push";
-  // const messagingAccessToken = process.env.LINE_CHANNEL_ACCESS_TOKEN;
-  const messagingAccessToken =
-    "XMJ7WeHHv/jhWWGEeDqV3PxO7fuxAtRumykv5/hm4ZqD+dQac2XtZiQySQavmI38CcwkeucAeTgiVRg1nyv6bE95TkrNDURLRYqM1PjmgfkZ7EQHWiBT5/sIAhIs7iyr6FAKSBvTEX3bfmKVVKGB4gdB04t89/1O/w1cDnyilFU=";
-  // const messagingAccessToken =
-  //   "tvb2bkJUvF5ZbSzAf9WDSmfwbwRDxI/2Nlw1TROa2XbaSAXdySiT1w4OvRQrTWPcZXSWvNn1cwlZtBkjly5fhhubxbIXzxZ5sAqnk0644k4l1ShKzP2MXJxZ50Wd1L0d1Yba6vX1JVDQYA/EBH2DbgdB04t89/1O/w1cDnyilFU=";
-
-  try {
-    const response = await fetch(messagingApiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${messagingAccessToken}`,
-      },
-      // body: JSON.stringify(req.body),
-      body: JSON.stringify(sendLine),
-    });
-
-    const responseData = await response.json();
-    console.log("response data: ", responseData);
-
-    if (response.ok) {
-      res.status(200).json({ message: "Message sent successfully" });
-    } else {
-      console.log("Failed response data: ", responseData);
-      res
-        .status(response.status)
-        .json({ message: "Failed to send message", details: responseData });
-    }
-  } catch (error) {
-    console.error("Error sending message:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
 
 exports.lineCheckDestination = async (req, res) => {
   console.log("req.body.events ", req.body.events[0]);
@@ -456,11 +268,6 @@ exports.lineUser = async (req, res) => {
   };
   const client_line = new line.Client(config_line);
 
-  // console.log("req.body ", req.body);
-  // console.log("req.body.destination ", req.body.destination);
-  // console.log("req.body.events ", req.body.events[0]);
-  // console.log("req.body.destination ", req.body.destination);
-  // console.log("userId ", req.body.events[0].source.userId);
   const lineUid = req.body.events[0].source.userId;
 
   const userId = req.body.events[0].source.userId;
@@ -553,9 +360,6 @@ exports.lineUser = async (req, res) => {
       }
     } else if (req.body.events[0].type == "follow") {
       console.log("TYPE FOLLOW============> ");
-      // const userId = req.body.events[0].source.userId;
-      // const profile = await client.getProfile(userId);
-      // console.log("User Profile:", profile);
 
       await fnAddConv(userId, addNewFriend);
 
@@ -568,8 +372,6 @@ exports.lineUser = async (req, res) => {
   } catch (err) {
     console.error("Error getting profile:", err);
   }
-
-  // res.send("test");
 };
 
 // };
@@ -607,88 +409,10 @@ const fnAddConv = async function (userId, getEnv) {
 };
 
 const sendToGa4 = async function (userId, getEnv) {
-  // console.log("sendToGa4 ");
-  // console.log("userId >>>>>>> ", userId);
-  // console.log("getEnv event>>>>>> ", getEnv.event);
-  // console.log("getEnv secret_value>>>>>> ", getEnv.secret_value);
-  // console.log("getEnv measurement_id>>>>>> ", getEnv.measurement_id);
-
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
   const api_secret = getEnv.secret_value; // Corrected 'api_secre' to 'api_secret'
   const measurement_id = getEnv.measurement_id;
-
-  // console.log("userId >>>>>>> ", userId);
-  // const query = DataGTM.findOne({ lineBotUid: userId });
-  // console.log("findOne query>>>>>>>>>>>", query);
-
-  // try {
-  //   const query = await DataGTM.findOne({ lineBotUid: userId });
-  //   console.log("findOne query>>>>>>>>>>>", query); // จะแสดงค่าที่ค้นหาเจอ
-  //   if (query) {
-  //     const raw = JSON.stringify({
-  //       client_id: query.clientID,
-  //       user_properties: { ipAddress: { value: query.ipAddess } },
-  //       events: [
-  //         {
-  //           name: getEnv.event,
-  //           params: {
-  //             convUserId: query.convUserId,
-  //             campaign: query.utm_campaign,
-  //             source: query.utm_source,
-  //             medium: query.utm_medium,
-  //             term: query.utm_term,
-  //             content: query.gg_keyword,
-  //             session_id: query.session_id,
-  //             // engagement_time_msec: "100",
-  //           },
-  //         },
-  //       ],
-  //     });
-
-  //     console.log("raw>>>>>>> ", raw);
-
-  //     const requestOptions = {
-  //       method: "POST",
-  //       headers: myHeaders,
-  //       body: raw,
-  //       redirect: "follow",
-  //     };
-
-  //     await fetch(
-  //       `https://www.google-analytics.com/mp/collect?measurement_id=${measurement_id}&api_secret=${api_secret}`,
-  //       // "https://www.google-analytics.com/mp/collect?measurement_id=G-BF1T8ZNXZQ&api_secret=Dpl6kV_3TC-FtqFKFQ9Plw",
-  //       requestOptions
-  //     )
-  //       .then((response) => {
-  //         console.log("response status>>>>>>> ", response.status);
-  //         console.log("response headers>>>>>>> ", response.headers);
-  //         response.text().then((text) => {
-  //           console.log("response body>>>>>>> ", text);
-  //         });
-  //         if (!response.ok) {
-  //           // Handle error response
-  //           throw new Error(
-  //             `Network response was not ok: ${response.statusText}`
-  //           );
-  //         }
-
-  //         // Check if there's any content to parse
-  //         const contentType = response.headers.get("Content-Type");
-  //         if (contentType && contentType.includes("application/json")) {
-  //           return response.json(); // Parse response as JSON
-  //         } else {
-  //           return response.text(); // Handle non-JSON response (if any)
-  //         }
-  //       })
-  //       .then((result) => {
-  //         console.log("result", result);
-  //       })
-  //       .catch((error) => console.error("Error with fetch: ", error));
-  //   }
-  // } catch (err) {
-  //   console.error("Error in findOne:", err);
-  // }
 
   try {
     const query = await DataGTM.findOne({ lineBotUid: userId });
@@ -732,19 +456,4 @@ const sendToGa4 = async function (userId, getEnv) {
   } catch (error) {
     console.error("Error with axios: ", error);
   }
-
-  // Find the document in the database
-  // DataGTM.findOne({ lineBotUid: userId }, function (_dataGTM) {
-  //   console.log("findOne DataGTM>>>>>>>>>>>", _dataGTM);
-
-  //   if (!_dataGTM) {
-  //     console.log("not Nodata>>>>>>>", userId);
-  //     console.log("not _dataGTM>>>>>>>", _dataGTM);
-  //     return;
-  //   } else {
-  //     console.log("else Nodata>>>>>>>", userId);
-  //     console.log("else _dataGTM>>>>>>>", _dataGTM);
-  //   }
-
-  // });
 };
