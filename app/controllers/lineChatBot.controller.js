@@ -17,6 +17,8 @@ const config = {
 const client = new line.Client(config);
 
 function confirmSaveDb(req, res, channelAccessToken) {
+  console.log("req.body.destination ", req.body.destination);
+
   try {
     const lineUserId = req.body.events[0].source.userId;
     if (req.body.events[0].message.type === "text") {
@@ -26,7 +28,7 @@ function confirmSaveDb(req, res, channelAccessToken) {
         replyToken: req.body.events[0].replyToken,
         //   messages: samplePayload(),
 
-        messages: setRegister(lineUserId),
+        messages: setRegister(lineUserId, req.body.destination),
 
         //   ],
       });
@@ -69,7 +71,7 @@ function confirmSaveDb(req, res, channelAccessToken) {
   }
 }
 
-function setRegister(lineUserId) {
+function setRegister(lineUserId, getLineDestination) {
   const testParam = lineUserId;
 
   var urlLiff = process.env.liffChat;
