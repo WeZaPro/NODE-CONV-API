@@ -88,7 +88,7 @@ exports.searchCusId = (req, res) => {
         else
           res.send({
             message: "send customer data",
-            customer_id: data.customer_id,
+            data: data.customerID,
           });
       })
       .catch((err) => {
