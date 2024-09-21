@@ -7,9 +7,7 @@ module.exports = (app) => {
   app.use(bodyParser.urlencoded({ extended: true }));
 
   app.post("/saveDataInfo", lineBot.saveDataInfo);
-
   app.post("/lineUser", lineBot.lineUser);
-
   app.post("/lineCheckDestination", lineBot.lineCheckDestination);
   app.post("/updateLineBotId", lineBot.updateLineBotId);
 

@@ -16,9 +16,6 @@ const config = {
 };
 const client = new line.Client(config);
 
-// let channelAccessToken = process.env.LINE_CHANNEL_ACCESS_TOKEN;
-// let channelAccessToken = process.env.LINE_CHANNEL_ACCESS_TOKEN;
-
 function confirmSaveDb(req, res, channelAccessToken) {
   try {
     const lineUserId = req.body.events[0].source.userId;
@@ -92,7 +89,8 @@ function setRegister(lineUserId) {
             //
             type: "uri",
             label: "YES",
-            uri: `${urlLiff}/?botUserId=${lineUserId}`,
+            // uri: `${urlLiff}/?botUserId=${lineUserId}`,
+            uri: `${urlLiff}/?botUserId=${lineUserId}&lineDestination=${getLineDestination}`,
           },
           {
             type: "uri",
@@ -191,7 +189,9 @@ exports.updateLineBotId = async (req, res) => {
 };
 
 exports.lineUser = async (req, res) => {
-  // console.log("Req >>>>>>>>>>>>>>> ", req);
+  console.log("req.body >>>>>>>>>>>>>>> ", req.body);
+  const getLineDestination = req.body.destination;
+  console.log("getLineDestination >>>>>>>>>>>>>>> ", getLineDestination);
   // check destination
   const BotMarketing_Destination = "U07ab7da94695cca39e6333e9a7db7ba7";
   const AccessToken_BotMarketing =

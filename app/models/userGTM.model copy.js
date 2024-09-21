@@ -59,22 +59,6 @@ module.exports = (mongoose) => {
         type: String,
         default: "",
       },
-      fbEventA: {
-        type: String,
-        default: "",
-      },
-      fbEventB: {
-        type: String,
-        default: "",
-      },
-      ttEventA: {
-        type: String,
-        default: "",
-      },
-      ttEventB: {
-        type: String,
-        default: "",
-      },
     },
     { timestamps: true }
   );
