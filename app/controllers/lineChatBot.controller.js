@@ -11,11 +11,11 @@ const axios = require("axios");
 const line = require("@line/bot-sdk");
 // check channel access token + channel Secret
 
-// const config = {
-//   channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN,
-//   channelSecret: process.env.channelSecret,
-// };
-// const client = new line.Client(config);
+const config = {
+  channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN,
+  channelSecret: process.env.channelSecret,
+};
+const client = new line.Client(config);
 
 function confirmSaveDb(req, res, channelAccessToken) {
   console.log("req.body.destination ", req.body.destination);
@@ -163,8 +163,8 @@ exports.saveDataInfo = async (req, res) => {
 //
 
 exports.lineCheckDestination = async (req, res) => {
-  // console.log("req.body.events ", req.body.events[0]);
-  // console.log("req.body.destination ", req.body.destination);
+  console.log("req.body.events ", req.body.events[0]);
+  console.log("req.body.destination ", req.body.destination);
   res.send({ message: "testLine" });
 };
 
@@ -193,168 +193,83 @@ exports.updateLineBotId = async (req, res) => {
 
 exports.lineUser = async (req, res) => {
   const getLineDestination = req.body.destination;
-  console.log("getLineDestination>>>>>>>>>>>>>>> ", getLineDestination);
+  // console.log("getLineDestination>>>>>>>>>>>>>>> ", getLineDestination);
   const dataFromDes = await getCusDataFromDestination(getLineDestination);
   console.log("dataFromDes >>>>>>>>>>>>>>> ", dataFromDes);
-  const lineUserData = {};
-  //TODO ให้เช็ค Bot Id ใน CUSTOMER ก่อน ถ้ามีกึง Init data
-  // init line user data
-  if (dataFromDes == null) {
-    console.log("No data Bot id in CUSTOMER");
-    lineUserData = {
-      msg: "No Data  Bot",
-      _customer_id: "",
-      _channel_access_token: "",
-      _line_bot_destination: "",
-      _line_user_id: "",
-      _line_bot_id: "",
-      _line_login_channel_id: "",
-      _line_login_channel_secret: "",
-      _line_reDirect_toLiff: "",
-      _line_liff_login_id: "",
-      _line_liff_url: "",
-
-      _ga4_id: "",
-      _addNewFriend_secret: "",
-      _addNewFriend_event: "",
-      _purchaseA_secret: "",
-      _purchaseA_event: "",
-      _interest_secret: "",
-      _interest_event: "",
-
-      fb_pixel: "",
-      fb_token: "",
-      fb_testCode: "",
-      fb_eventA: "",
-      fb_eventB: "",
-
-      tt_pixel: "",
-      tt_token: "",
-      tt_testCode: "",
-      tt_eventA: "",
-      tt_eventB: "",
-    };
-    console.log("lineUserData >>>>>>>>>>>>>>> ", lineUserData);
-  } else {
-    lineUserData = {
-      msg: "Hello Bot",
-      _customer_id: dataFromDes.customer_id,
-      _channel_access_token: dataFromDes.line_msg_api_token,
-      _line_bot_destination: dataFromDes.line_bot_destination,
-      _line_user_id: dataFromDes.line_user_id,
-      _line_bot_id: dataFromDes.line_bot_id,
-      _line_login_channel_id: dataFromDes.line_login_channel_id,
-      _line_login_channel_secret: dataFromDes._line_login_channel_secret,
-      _line_reDirect_toLiff: dataFromDes.line_reDirect_toLiff,
-      _line_liff_login_id: dataFromDes.line_liff_login_id,
-      _line_liff_url: dataFromDes.line_liff_url,
-
-      _ga4_id: dataFromDes.Measurement_id,
-      _addNewFriend_secret: dataFromDes.addFriend_secret,
-      _addNewFriend_event: dataFromDes.addFriend_name,
-      _purchaseA_secret: dataFromDes.purchaseA_secret,
-      _purchaseA_event: dataFromDes.purchaseA_name,
-      _interest_secret: dataFromDes.interest_secret,
-      _interest_event: dataFromDes.interest_name,
-
-      fb_pixel: dataFromDes.fb_pixel,
-      fb_token: dataFromDes.fb_token,
-      fb_testCode: dataFromDes.fb_testCode,
-      fb_eventA: dataFromDes.fb_eventA,
-      fb_eventB: dataFromDes.fb_eventB,
-
-      tt_pixel: dataFromDes.tt_pixel,
-      tt_token: dataFromDes.tt_token,
-      tt_testCode: dataFromDes.tt_testCode,
-      tt_eventA: dataFromDes.tt_eventA,
-      tt_eventB: dataFromDes.tt_eventB,
-    };
-    console.log("lineUserData >>>>>>>>>>>>>>> ", lineUserData);
-  }
-
-  // msg = "Bot Marketing ==> ";
-  //     channel_access_token = AccessToken_BotMarketing;
-  //     _ga4_id = BotMarketing_ga4_id;
-  //     _addNewFriend_secret = BotMarketing_ga4_secret_addNewFriend;
-  //     _addNewFriend_event = BotMarketing_ga4_event_addNewFriend;
-  //     _purchaseA_secret = BotMarketing_ga4_secret__purchase;
-  //     _purchaseA_event = BotMarketing_ga4_event_purchase;
-  //     _interest_secret = BotMarketing_ga4_secret_interest;
-  //     _interest_event = BotMarketing_ga4_event_interest;
 
   // check destination
-  // const BotMarketing_Destination = "U07ab7da94695cca39e6333e9a7db7ba7";
-  // const AccessToken_BotMarketing =
-  //   "tvb2bkJUvF5ZbSzAf9WDSmfwbwRDxI/2Nlw1TROa2XbaSAXdySiT1w4OvRQrTWPcZXSWvNn1cwlZtBkjly5fhhubxbIXzxZ5sAqnk0644k4l1ShKzP2MXJxZ50Wd1L0d1Yba6vX1JVDQYA/EBH2DbgdB04t89/1O/w1cDnyilFU=";
-  // const channelSecret_BotMarketing = "ed8d53f3b3d65b4f30a12af005f0a510";
-  // const BotMarketing_ga4_id = "G-BF1T8ZNXZQ";
-  // //
-  // const BotMarketing_ga4_event_addNewFriend = "addFriend";
-  // const BotMarketing_ga4_secret_addNewFriend = "C2sGHFZaRF6MA0KQ_igkiA";
-  // //
-  // const BotMarketing_ga4_event_purchase = "PurchaseA";
-  // const BotMarketing_ga4_secret__purchase = "NMsz4YtcS0SlSoFV-jK-uQ";
-  // //
-  // const BotMarketing_ga4_event_interest = "interest";
-  // const BotMarketing_ga4_secret_interest = "_UBms8ItRX2nl49klAVNVw";
-  // //-----------------------------------------------------------------------------------------------------------------
-  // const SiriBot_Destination = "U8b1d7e5f0a2986289113cfb14df51e18";
-  // const AccessToken_SiriBot =
-  //   "XMJ7WeHHv/jhWWGEeDqV3PxO7fuxAtRumykv5/hm4ZqD+dQac2XtZiQySQavmI38CcwkeucAeTgiVRg1nyv6bE95TkrNDURLRYqM1PjmgfkZ7EQHWiBT5/sIAhIs7iyr6FAKSBvTEX3bfmKVVKGB4gdB04t89/1O/w1cDnyilFU=";
-  // const channelSecret_SiriBot = "894bf30e64cb28fff808ce93ffb19230";
-  // const SiriBot_ga4_id = "G-041ZG8ZZ50";
-  // //
-  // const SiriBot_ga4_event_addNewFriend = "addFriend";
-  // const SiriBot_ga4_secret_addNewFriend = "ERh5RV41TVOQORPAFcJaKw";
-  // //
-  // const SiriBot_ga4_event_purchase = "PurchaseA";
-  // const SiriBot_ga4_secret_purchase = "FVxfTVDPSFuV78wK3Fv4fQ";
-  // //
-  // const SiriBot_ga4_event_interest = "interest";
-  // const SiriBot_ga4_secret_interest = "eF_AC5SeRxi2BwCBZok5Yw";
+  const BotMarketing_Destination = "U07ab7da94695cca39e6333e9a7db7ba7";
+  const AccessToken_BotMarketing =
+    "tvb2bkJUvF5ZbSzAf9WDSmfwbwRDxI/2Nlw1TROa2XbaSAXdySiT1w4OvRQrTWPcZXSWvNn1cwlZtBkjly5fhhubxbIXzxZ5sAqnk0644k4l1ShKzP2MXJxZ50Wd1L0d1Yba6vX1JVDQYA/EBH2DbgdB04t89/1O/w1cDnyilFU=";
+  const channelSecret_BotMarketing = "ed8d53f3b3d65b4f30a12af005f0a510";
+  const BotMarketing_ga4_id = "G-BF1T8ZNXZQ";
+  //
+  const BotMarketing_ga4_event_addNewFriend = "addFriend";
+  const BotMarketing_ga4_secret_addNewFriend = "C2sGHFZaRF6MA0KQ_igkiA";
+  //
+  const BotMarketing_ga4_event_purchase = "PurchaseA";
+  const BotMarketing_ga4_secret__purchase = "NMsz4YtcS0SlSoFV-jK-uQ";
+  //
+  const BotMarketing_ga4_event_interest = "interest";
+  const BotMarketing_ga4_secret_interest = "_UBms8ItRX2nl49klAVNVw";
+  //-----------------------------------------------------------------------------------------------------------------
+  const SiriBot_Destination = "U8b1d7e5f0a2986289113cfb14df51e18";
+  const AccessToken_SiriBot =
+    "XMJ7WeHHv/jhWWGEeDqV3PxO7fuxAtRumykv5/hm4ZqD+dQac2XtZiQySQavmI38CcwkeucAeTgiVRg1nyv6bE95TkrNDURLRYqM1PjmgfkZ7EQHWiBT5/sIAhIs7iyr6FAKSBvTEX3bfmKVVKGB4gdB04t89/1O/w1cDnyilFU=";
+  const channelSecret_SiriBot = "894bf30e64cb28fff808ce93ffb19230";
+  const SiriBot_ga4_id = "G-041ZG8ZZ50";
+  //
+  const SiriBot_ga4_event_addNewFriend = "addFriend";
+  const SiriBot_ga4_secret_addNewFriend = "ERh5RV41TVOQORPAFcJaKw";
+  //
+  const SiriBot_ga4_event_purchase = "PurchaseA";
+  const SiriBot_ga4_secret_purchase = "FVxfTVDPSFuV78wK3Fv4fQ";
+  //
+  const SiriBot_ga4_event_interest = "interest";
+  const SiriBot_ga4_secret_interest = "eF_AC5SeRxi2BwCBZok5Yw";
   //-------------------------------------------------------------------------------
 
-  // let channel_access_token = "";
-  // let secret_channel = "";
-  // //
-  // let _ga4_id = "";
-  // let _addNewFriend_secret = "";
-  // let _addNewFriend_event = "";
-  // let _purchaseA_secret = "";
-  // let _purchaseA_event = "";
-  // let _interest_secret = "";
-  // let _interest_event = "";
-  // //
-  // switch (req.body.destination) {
-  //   case BotMarketing_Destination:
-  //     msg = "Bot Marketing ==> ";
-  //     channel_access_token = AccessToken_BotMarketing;
-  //     _ga4_id = BotMarketing_ga4_id;
-  //     _addNewFriend_secret = BotMarketing_ga4_secret_addNewFriend;
-  //     _addNewFriend_event = BotMarketing_ga4_event_addNewFriend;
-  //     _purchaseA_secret = BotMarketing_ga4_secret__purchase;
-  //     _purchaseA_event = BotMarketing_ga4_event_purchase;
-  //     _interest_secret = BotMarketing_ga4_secret_interest;
-  //     _interest_event = BotMarketing_ga4_event_interest;
-  //     break;
+  let channel_access_token = "";
+  let secret_channel = "";
+  //
+  let _ga4_id = "";
+  let _addNewFriend_secret = "";
+  let _addNewFriend_event = "";
+  let _purchaseA_secret = "";
+  let _purchaseA_event = "";
+  let _interest_secret = "";
+  let _interest_event = "";
+  //
+  switch (req.body.destination) {
+    case BotMarketing_Destination:
+      msg = "Bot Marketing ==> ";
+      channel_access_token = AccessToken_BotMarketing;
+      _ga4_id = BotMarketing_ga4_id;
+      _addNewFriend_secret = BotMarketing_ga4_secret_addNewFriend;
+      _addNewFriend_event = BotMarketing_ga4_event_addNewFriend;
+      _purchaseA_secret = BotMarketing_ga4_secret__purchase;
+      _purchaseA_event = BotMarketing_ga4_event_purchase;
+      _interest_secret = BotMarketing_ga4_secret_interest;
+      _interest_event = BotMarketing_ga4_event_interest;
+      break;
 
-  //   case SiriBot_Destination:
-  //     msg = "SiriBot ==> ";
-  //     channel_access_token = AccessToken_SiriBot;
-  //     //
-  //     _ga4_id = SiriBot_ga4_id;
-  //     _addNewFriend_secret = SiriBot_ga4_secret_addNewFriend;
-  //     _addNewFriend_event = SiriBot_ga4_event_addNewFriend;
-  //     _purchaseA_secret = SiriBot_ga4_secret_purchase;
-  //     _purchaseA_event = SiriBot_ga4_event_purchase;
-  //     _interest_secret = SiriBot_ga4_secret_interest;
-  //     _interest_event = SiriBot_ga4_event_interest; //
-  //     break;
-  // }
+    case SiriBot_Destination:
+      msg = "SiriBot ==> ";
+      channel_access_token = AccessToken_SiriBot;
+      //
+      _ga4_id = SiriBot_ga4_id;
+      _addNewFriend_secret = SiriBot_ga4_secret_addNewFriend;
+      _addNewFriend_event = SiriBot_ga4_event_addNewFriend;
+      _purchaseA_secret = SiriBot_ga4_secret_purchase;
+      _purchaseA_event = SiriBot_ga4_event_purchase;
+      _interest_secret = SiriBot_ga4_secret_interest;
+      _interest_event = SiriBot_ga4_event_interest; //
+      break;
+  }
 
   const config_line = {
-    channelAccessToken: lineUserData._channel_access_token,
-    channelSecret: lineUserData._line_login_channel_secret,
+    channelAccessToken: channel_access_token,
+    channelSecret: secret_channel,
   };
   const client_line = new line.Client(config_line);
 
@@ -365,21 +280,21 @@ exports.lineUser = async (req, res) => {
 
   //ADD FRIEND
   const addNewFriend = {
-    measurement_id: lineUserData._ga4_id,
-    secret_value: lineUserData._addNewFriend_secret,
-    event: lineUserData._addNewFriend_event,
+    measurement_id: _ga4_id,
+    secret_value: _addNewFriend_secret,
+    event: _addNewFriend_event,
   };
 
   const purchase = {
-    measurement_id: lineUserData._ga4_id,
-    secret_value: lineUserData._purchaseA_secret,
-    event: lineUserData._purchaseA_event,
+    measurement_id: _ga4_id,
+    secret_value: _purchaseA_secret,
+    event: _purchaseA_event,
   };
 
   const interest = {
-    measurement_id: lineUserData._ga4_id,
-    secret_value: lineUserData._interest_secret,
-    event: lineUserData._interest_event,
+    measurement_id: _ga4_id,
+    secret_value: _interest_secret,
+    event: _interest_event,
   };
 
   try {
@@ -440,8 +355,7 @@ exports.lineUser = async (req, res) => {
                 confirmSaveDb(req, res, config_line.channelAccessToken);
                 // กด yes บน reply จะส่ง botUid ไปกับ param และ find lineUid -> update botUid
               } else {
-                // console.log("req.body.events[0].--> ", req.body.events[0]);
-                console.log("req.body.events[0].--> ");
+                console.log("req.body.events[0].--> ", req.body.events[0]);
               }
             }
           );
@@ -472,7 +386,7 @@ const getCusDataFromDestination = async function (_destination) {
     const data = await Customer.find({ line_bot_destination: _destination });
 
     if (data && data.length > 0) {
-      // console.log("lineCusData[0] : ", data[0]);
+      console.log("lineCusData[0] : ", data[0]);
       return data[0];
     } else {
       console.log("No data found");
