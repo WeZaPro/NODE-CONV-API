@@ -193,7 +193,7 @@ exports.updateLineBotId = async (req, res) => {
 
 exports.lineUser = async (req, res) => {
   const getLineDestination = req.body.destination;
-  // console.log("getLineDestination>>>>>>>>>>>>>>> ", getLineDestination);
+  console.log("getLineDestination>>>>>>>>>>>>>>> ", getLineDestination);
   const dataFromDes = await getCusDataFromDestination(getLineDestination);
   console.log("dataFromDes >>>>>>>>>>>>>>> ", dataFromDes);
   // init line user data
