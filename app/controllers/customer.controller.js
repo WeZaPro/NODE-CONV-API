@@ -106,8 +106,8 @@ exports.findAndUpdateLine = async (req, res) => {
   const filter = { customer_id: req.body.customer_id };
   const update = {
     line_bot_destination: req.body.line_bot_destination,
-    line_user_id: req.body.line_user_id,
-    line_bot_id: req.body.line_bot_id,
+    // line_user_id: req.body.line_user_id,
+    // line_bot_id: req.body.line_bot_id,
   };
   console.log("find customer data ", filter);
   try {

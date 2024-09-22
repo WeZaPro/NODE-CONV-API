@@ -6,6 +6,10 @@ module.exports = (mongoose) => {
       userAgent: String,
       ipAddess: String,
       clientID: String,
+      line_access_token: {
+        type: String,
+        default: "",
+      },
       utm_source: {
         type: String,
         default: "",

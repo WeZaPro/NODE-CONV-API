@@ -119,6 +119,7 @@ exports.saveDataInfo = async (req, res) => {
     userAgent: req.body.userAgent,
     ipAddess: req.body.ipAddess,
     clientID: req.body.clientID,
+    line_access_token: req.body.line_access_token,
     utm_campaign: req.body.utm_campaign,
     utm_source: req.body.utm_source,
     utm_medium: req.body.utm_medium,
