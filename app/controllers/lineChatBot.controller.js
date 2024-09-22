@@ -196,43 +196,82 @@ exports.lineUser = async (req, res) => {
   console.log("getLineDestination>>>>>>>>>>>>>>> ", getLineDestination);
   const dataFromDes = await getCusDataFromDestination(getLineDestination);
   console.log("dataFromDes >>>>>>>>>>>>>>> ", dataFromDes);
+  const lineUserData = {};
+  //TODO ให้เช็ค Bot Id ใน CUSTOMER ก่อน ถ้ามีกึง Init data
   // init line user data
+  if (dataFromDes == null) {
+    console.log("No data Bot id in CUSTOMER");
+    lineUserData = {
+      msg: "No Data  Bot",
+      _customer_id: "",
+      _channel_access_token: "",
+      _line_bot_destination: "",
+      _line_user_id: "",
+      _line_bot_id: "",
+      _line_login_channel_id: "",
+      _line_login_channel_secret: "",
+      _line_reDirect_toLiff: "",
+      _line_liff_login_id: "",
+      _line_liff_url: "",
 
-  const lineUserData = {
-    msg: "Hello Bot",
-    _customer_id: dataFromDes.customer_id,
-    _channel_access_token: dataFromDes.line_msg_api_token,
-    _line_bot_destination: dataFromDes.line_bot_destination,
-    _line_user_id: dataFromDes.line_user_id,
-    _line_bot_id: dataFromDes.line_bot_id,
-    _line_login_channel_id: dataFromDes.line_login_channel_id,
-    _line_login_channel_secret: dataFromDes._line_login_channel_secret,
-    _line_reDirect_toLiff: dataFromDes.line_reDirect_toLiff,
-    _line_liff_login_id: dataFromDes.line_liff_login_id,
-    _line_liff_url: dataFromDes.line_liff_url,
+      _ga4_id: "",
+      _addNewFriend_secret: "",
+      _addNewFriend_event: "",
+      _purchaseA_secret: "",
+      _purchaseA_event: "",
+      _interest_secret: "",
+      _interest_event: "",
 
-    _ga4_id: dataFromDes.Measurement_id,
-    _addNewFriend_secret: dataFromDes.addFriend_secret,
-    _addNewFriend_event: dataFromDes.addFriend_name,
-    _purchaseA_secret: dataFromDes.purchaseA_secret,
-    _purchaseA_event: dataFromDes.purchaseA_name,
-    _interest_secret: dataFromDes.interest_secret,
-    _interest_event: dataFromDes.interest_name,
+      fb_pixel: "",
+      fb_token: "",
+      fb_testCode: "",
+      fb_eventA: "",
+      fb_eventB: "",
 
-    fb_pixel: dataFromDes.fb_pixel,
-    fb_token: dataFromDes.fb_token,
-    fb_testCode: dataFromDes.fb_testCode,
-    fb_eventA: dataFromDes.fb_eventA,
-    fb_eventB: dataFromDes.fb_eventB,
+      tt_pixel: "",
+      tt_token: "",
+      tt_testCode: "",
+      tt_eventA: "",
+      tt_eventB: "",
+    };
+    console.log("lineUserData >>>>>>>>>>>>>>> ", lineUserData);
+  } else {
+    lineUserData = {
+      msg: "Hello Bot",
+      _customer_id: dataFromDes.customer_id,
+      _channel_access_token: dataFromDes.line_msg_api_token,
+      _line_bot_destination: dataFromDes.line_bot_destination,
+      _line_user_id: dataFromDes.line_user_id,
+      _line_bot_id: dataFromDes.line_bot_id,
+      _line_login_channel_id: dataFromDes.line_login_channel_id,
+      _line_login_channel_secret: dataFromDes._line_login_channel_secret,
+      _line_reDirect_toLiff: dataFromDes.line_reDirect_toLiff,
+      _line_liff_login_id: dataFromDes.line_liff_login_id,
+      _line_liff_url: dataFromDes.line_liff_url,
 
-    tt_pixel: dataFromDes.tt_pixel,
-    tt_token: dataFromDes.tt_token,
-    tt_testCode: dataFromDes.tt_testCode,
-    tt_eventA: dataFromDes.tt_eventA,
-    tt_eventB: dataFromDes.tt_eventB,
-  };
+      _ga4_id: dataFromDes.Measurement_id,
+      _addNewFriend_secret: dataFromDes.addFriend_secret,
+      _addNewFriend_event: dataFromDes.addFriend_name,
+      _purchaseA_secret: dataFromDes.purchaseA_secret,
+      _purchaseA_event: dataFromDes.purchaseA_name,
+      _interest_secret: dataFromDes.interest_secret,
+      _interest_event: dataFromDes.interest_name,
 
-  console.log("lineUserData >>>>>>>>>>>>>>> ", lineUserData);
+      fb_pixel: dataFromDes.fb_pixel,
+      fb_token: dataFromDes.fb_token,
+      fb_testCode: dataFromDes.fb_testCode,
+      fb_eventA: dataFromDes.fb_eventA,
+      fb_eventB: dataFromDes.fb_eventB,
+
+      tt_pixel: dataFromDes.tt_pixel,
+      tt_token: dataFromDes.tt_token,
+      tt_testCode: dataFromDes.tt_testCode,
+      tt_eventA: dataFromDes.tt_eventA,
+      tt_eventB: dataFromDes.tt_eventB,
+    };
+    console.log("lineUserData >>>>>>>>>>>>>>> ", lineUserData);
+  }
+
   // msg = "Bot Marketing ==> ";
   //     channel_access_token = AccessToken_BotMarketing;
   //     _ga4_id = BotMarketing_ga4_id;
@@ -395,7 +434,7 @@ exports.lineUser = async (req, res) => {
           DataGTM.findOne(
             { lineBotUid: req.body.events[0].source.userId },
             function (err, _userId) {
-              // console.log("_userId => ", _userId);
+              console.log("_userId => ", _userId);
               if (_userId === null) {
                 //Todo send message confirm save
                 confirmSaveDb(req, res, config_line.channelAccessToken);
