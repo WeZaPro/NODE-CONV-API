@@ -196,17 +196,6 @@ exports.lineUser = async (req, res) => {
   // console.log("getLineDestination>>>>>>>>>>>>>>> ", getLineDestination);
   const dataFromDes = await getCusDataFromDestination(getLineDestination);
   console.log("dataFromDes >>>>>>>>>>>>>>> ", dataFromDes);
-  // init line user data
-
-  // msg = "Bot Marketing ==> ";
-  //     channel_access_token = AccessToken_BotMarketing;
-  //     _ga4_id = BotMarketing_ga4_id;
-  //     _addNewFriend_secret = BotMarketing_ga4_secret_addNewFriend;
-  //     _addNewFriend_event = BotMarketing_ga4_event_addNewFriend;
-  //     _purchaseA_secret = BotMarketing_ga4_secret__purchase;
-  //     _purchaseA_event = BotMarketing_ga4_event_purchase;
-  //     _interest_secret = BotMarketing_ga4_secret_interest;
-  //     _interest_event = BotMarketing_ga4_event_interest;
 
   // check destination
   const BotMarketing_Destination = "U07ab7da94695cca39e6333e9a7db7ba7";
