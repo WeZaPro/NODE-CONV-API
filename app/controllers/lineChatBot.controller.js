@@ -11,11 +11,11 @@ const axios = require("axios");
 const line = require("@line/bot-sdk");
 // check channel access token + channel Secret
 
-const config = {
-  channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN,
-  channelSecret: process.env.channelSecret,
-};
-const client = new line.Client(config);
+// const config = {
+//   channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN,
+//   channelSecret: process.env.channelSecret,
+// };
+// const client = new line.Client(config);
 
 function confirmSaveDb(req, res, channelAccessToken) {
   console.log("req.body.destination ", req.body.destination);
